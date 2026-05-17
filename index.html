@@ -340,6 +340,34 @@
       justify-content: space-between;
     }
 
+    .btn-export {
+      display: inline-flex;
+      align-items: center;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 5px 10px;
+      border-radius: 6px;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--accent);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      letter-spacing: 1px;
+    }
+
+    .btn-excel:hover {
+      background: #e2fbe9;
+      border-color: #2e7d32;
+      color: #2e7d32;
+    }
+
+    .btn-pdf:hover {
+      background: #ffebee;
+      border-color: #c62828;
+      color: #c62828;
+    }
+
     .panel-title-text {
       display: flex;
       align-items: center;
@@ -684,9 +712,19 @@
 
       <!-- History Table -->
       <div class="panel">
-        <div class="panel-title">
+        <div class="panel-title" style="display:flex; justify-content:space-between; align-items:center;">
           <div class="panel-title-text">
             Riwayat: <span id="histLabel" style="color:var(--accent);margin-left:6px">TEGANGAN</span>
+          </div>
+          <div class="export-buttons" style="display: flex; gap: 8px;">
+            <button onclick="exportToCSV()" class="btn-export btn-excel" title="Unduh Data Excel (CSV)">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right:4px;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+              EXCEL
+            </button>
+            <button onclick="exportToPDF()" class="btn-export btn-pdf" title="Cetak Laporan PDF">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right:4px;"><path d="M6 9V2h12v7"></path><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+              PDF
+            </button>
           </div>
         </div>
         <table class="history-table">
@@ -1015,6 +1053,133 @@
       const m = Math.floor((seconds % 3600) / 60);
       const s = seconds % 60;
       document.getElementById('footerUptime').textContent = `Uptime: ${pad(h)}:${pad(m)}:${pad(s)}`;
+    }
+
+    // ── EXPORT EXCEL (CSV) ──
+    function exportToCSV() {
+      const length = history[activeSensor][0].length;
+      if (length === 0) {
+        alert('Belum ada data untuk diekspor!');
+        return;
+      }
+
+      // Prepare CSV data
+      let csv = 'No,Waktu,Tegangan (V),Arus (A),Daya (W),Energi (kWh),Frekuensi (Hz)\n';
+      for (let i = 0; i < length; i++) {
+        const time = history[activeSensor][0][i]?.time || '';
+        const v = history[activeSensor][0][i]?.value || 0;
+        const a = history[activeSensor][1][i]?.value || 0;
+        const w = history[activeSensor][2][i]?.value || 0;
+        const kwh = history[activeSensor][3][i]?.value || 0;
+        const hz = history[activeSensor][4][i]?.value || 0;
+        csv += `${i + 1},${time},${v},${a},${w},${kwh},${hz}\n`;
+      }
+
+      // Download CSV
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.setAttribute('href', url);
+      link.setAttribute('download', `Smart_Power_Meter_Sensor_${activeSensor + 1}_Report.csv`);
+      link.style.visibility = 'hidden';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+
+    // ── EXPORT PDF (PRINT REPORT) ──
+    function exportToPDF() {
+      const length = history[activeSensor][0].length;
+      if (length === 0) {
+        alert('Belum ada data untuk dicetak!');
+        return;
+      }
+
+      let tableRows = '';
+      for (let i = 0; i < length; i++) {
+        const time = history[activeSensor][0][i]?.time || '';
+        const v = history[activeSensor][0][i]?.value || 0;
+        const a = history[activeSensor][1][i]?.value || 0;
+        const w = history[activeSensor][2][i]?.value || 0;
+        const kwh = history[activeSensor][3][i]?.value || 0;
+        const hz = history[activeSensor][4][i]?.value || 0;
+        tableRows += `
+          <tr>
+            <td>${i + 1}</td>
+            <td>${time}</td>
+            <td>${v.toFixed(2)} V</td>
+            <td>${a.toFixed(2)} A</td>
+            <td>${w.toFixed(2)} W</td>
+            <td>${kwh.toFixed(4)} kWh</td>
+            <td>${hz.toFixed(2)} Hz</td>
+          </tr>
+        `;
+      }
+
+      const now = new Date();
+      const dateStr = now.toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+
+      const printWindow = window.open('', '_blank');
+      printWindow.document.write(`
+        <html>
+        <head>
+          <title>Laporan Smart Power Meter Strip - Sensor ${activeSensor + 1}</title>
+          <style>
+            body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; color: #2c3e50; padding: 40px; }
+            .header { border-bottom: 3px solid #213661; padding-bottom: 20px; margin-bottom: 30px; display: flex; justify-content: space-between; align-items: center; }
+            .logo-title { font-size: 24px; font-weight: bold; color: #213661; text-transform: uppercase; }
+            .sub-title { font-size: 14px; color: #ed6c2f; font-weight: 600; margin-top: 4px; }
+            .meta-info { font-size: 12px; text-align: right; color: #7f8c8d; }
+            table { width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 13px; }
+            th, td { border: 1px solid #d2dfeb; padding: 12px 10px; text-align: left; }
+            th { background-color: #f0f4fc; color: #213661; font-weight: bold; }
+            tr:nth-child(even) { background-color: #f9fbfd; }
+            .footer { margin-top: 50px; text-align: center; font-size: 11px; color: #bdc3c7; border-top: 1px solid #eee; padding-top: 20px; }
+          </style>
+        </head>
+        <body>
+          <div class="header">
+            <div>
+              <div class="logo-title">Smart Power Meter Strip</div>
+              <div class="sub-title">TEAM BMS 3 - LAPORAN SENSOR ${activeSensor + 1}</div>
+            </div>
+            <div class="meta-info">
+              <div>Dicetak pada: ${dateStr}</div>
+              <div>Status Sensor: ${systemStates[activeSensor] ? 'AKTIF (ON)' : 'MATI (OFF)'}</div>
+            </div>
+          </div>
+          
+          <h3>Data Riwayat Pengukuran (Terbaru)</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>No</th>
+                <th>Waktu</th>
+                <th>Tegangan</th>
+                <th>Arus</th>
+                <th>Daya</th>
+                <th>Energi</th>
+                <th>Frekuensi</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${tableRows}
+            </tbody>
+          </table>
+          
+          <div class="footer">
+            Laporan ini dibuat otomatis oleh Sistem Monitoring Smart Power Meter Strip - TEAM BMS 3 - POLIBATAM
+          </div>
+          <script>
+            window.onload = function() {
+              window.print();
+              setTimeout(function() { window.close(); }, 500);
+            };
+          <\/script>
+        </body>
+        </html>
+      `);
+      printWindow.document.close();
     }
 
     document.getElementById('statusBadge').addEventListener('click', toggleSystem);
