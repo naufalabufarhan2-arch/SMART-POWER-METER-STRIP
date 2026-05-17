@@ -609,6 +609,54 @@
         grid-template-columns: repeat(2, 1fr);
       }
     }
+
+    /* ── PAGE SWITCHER ── */
+    .nav-bar {
+      display: flex;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 0 40px;
+      gap: 24px;
+    }
+
+    .nav-tab {
+      padding: 16px 20px;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--muted);
+      cursor: pointer;
+      border-bottom: 3px solid transparent;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .nav-tab:hover {
+      color: var(--accent);
+    }
+
+    .nav-tab.active {
+      color: var(--accent);
+      border-bottom-color: var(--accent);
+    }
+
+    .page-content {
+      display: none;
+      animation: fadeIn 0.4s ease;
+    }
+
+    .page-content.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(5px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
   </style>
 </head>
 
@@ -626,7 +674,21 @@
     </div>
   </header>
 
+  <!-- ── SUB-HEADER NAVIGATION BAR ── -->
+  <div class="nav-bar">
+    <div class="nav-tab active" onclick="switchPage('dashboard')">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="7" height="9"></rect><rect x="14" y="3" width="7" height="5"></rect><rect x="14" y="12" width="7" height="9"></rect><rect x="3" y="16" width="7" height="5"></rect></svg>
+      Dashboard Pemantauan
+    </div>
+    <div class="nav-tab" onclick="switchPage('reports')">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+      Laporan Perbandingan (Hal 2)
+    </div>
+  </div>
+
   <main>
+    <!-- ── HALAMAN 1: DASHBOARD UTAMA ── -->
+    <div id="page-dashboard" class="page-content active">
 
     <div class="section-label">Pilih Sensor</div>
     <div class="sensor-tabs">
@@ -743,7 +805,106 @@
         </div>
       </div>
 
-    </div>
+    </div> <!-- Selesai page-dashboard -->
+
+    <!-- ── HALAMAN 2: LAPORAN PERBANDINGAN KEDUA SENSOR ── -->
+    <div id="page-reports" class="page-content">
+      <div class="reports-header" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px; flex-wrap:wrap; gap:16px;">
+        <div class="section-label" style="margin-bottom:0;">Laporan Perbandingan Kedua Sensor</div>
+        <div style="display:flex; gap:8px;">
+          <button onclick="exportBothToCSV()" class="btn-export btn-excel" style="padding:8px 14px; font-size:11px;">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="margin-right:6px;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+            EKSPOR EXCEL (GABUNGAN)
+          </button>
+          <button onclick="exportBothToPDF()" class="btn-export btn-pdf" style="padding:8px 14px; font-size:11px;">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="margin-right:6px;"><path d="M6 9V2h12v7"></path><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+            CETAK PDF (GABUNGAN)
+          </button>
+        </div>
+      </div>
+
+      <!-- Quick Summary Cards for both sensors side by side -->
+      <div class="bottom-grid" style="grid-template-columns: 1fr 1fr; margin-bottom:32px;">
+        <!-- Card Sensor 1 -->
+        <div class="panel" style="background:#f4f8fb; border-color:#dbe6ee;">
+          <div style="font-size:16px; font-weight:700; color:var(--accent); margin-bottom:16px; display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #dbe6ee; padding-bottom:8px;">
+            <span>SENSOR 1</span>
+            <span class="status-badge" id="reportStatusBadge0" style="padding:4px 10px; font-size:10px; pointer-events:none; border-radius:4px;">MEMUAT...</span>
+          </div>
+          <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:12px;">
+            <div>
+              <div style="font-size:9px; color:var(--muted); text-transform:uppercase; font-family:'IBM Plex Mono', monospace; font-weight:600; letter-spacing:1px; margin-bottom:4px;">Tegangan Rata-Rata</div>
+              <div id="reportAvgV0" style="font-size:18px; font-weight:700; color:var(--accent); font-family:'Rajdhani', sans-serif;">—</div>
+            </div>
+            <div>
+              <div style="font-size:9px; color:var(--muted); text-transform:uppercase; font-family:'IBM Plex Mono', monospace; font-weight:600; letter-spacing:1px; margin-bottom:4px;">Daya Rata-Rata</div>
+              <div id="reportAvgW0" style="font-size:18px; font-weight:700; color:#ed6c2f; font-family:'Rajdhani', sans-serif;">—</div>
+            </div>
+            <div>
+              <div style="font-size:9px; color:var(--muted); text-transform:uppercase; font-family:'IBM Plex Mono', monospace; font-weight:600; letter-spacing:1px; margin-bottom:4px;">Total Energi</div>
+              <div id="reportEnergy0" style="font-size:18px; font-weight:700; color:#eab308; font-family:'Rajdhani', sans-serif;">—</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card Sensor 2 -->
+        <div class="panel" style="background:#f4f8fb; border-color:#dbe6ee;">
+          <div style="font-size:16px; font-weight:700; color:var(--accent); margin-bottom:16px; display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #dbe6ee; padding-bottom:8px;">
+            <span>SENSOR 2</span>
+            <span class="status-badge" id="reportStatusBadge1" style="padding:4px 10px; font-size:10px; pointer-events:none; border-radius:4px;">MEMUAT...</span>
+          </div>
+          <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:12px;">
+            <div>
+              <div style="font-size:9px; color:var(--muted); text-transform:uppercase; font-family:'IBM Plex Mono', monospace; font-weight:600; letter-spacing:1px; margin-bottom:4px;">Tegangan Rata-Rata</div>
+              <div id="reportAvgV1" style="font-size:18px; font-weight:700; color:var(--accent); font-family:'Rajdhani', sans-serif;">—</div>
+            </div>
+            <div>
+              <div style="font-size:9px; color:var(--muted); text-transform:uppercase; font-family:'IBM Plex Mono', monospace; font-weight:600; letter-spacing:1px; margin-bottom:4px;">Daya Rata-Rata</div>
+              <div id="reportAvgW1" style="font-size:18px; font-weight:700; color:#ed6c2f; font-family:'Rajdhani', sans-serif;">—</div>
+            </div>
+            <div>
+              <div style="font-size:9px; color:var(--muted); text-transform:uppercase; font-family:'IBM Plex Mono', monospace; font-weight:600; letter-spacing:1px; margin-bottom:4px;">Total Energi</div>
+              <div id="reportEnergy1" style="font-size:18px; font-weight:700; color:#eab308; font-family:'Rajdhani', sans-serif;">—</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Integrated side-by-side table -->
+      <div class="panel" style="padding:0; overflow:hidden;">
+        <div class="panel-title" style="padding:20px 24px 12px 24px; margin-bottom:0; border-bottom:1px solid var(--border);">
+          <span class="panel-title-text"><span class="panel-dot"></span> Tabel Pemantauan Terpadu (Kedua Sensor)</span>
+        </div>
+        <div style="overflow-x:auto;">
+          <table class="history-table" style="min-width: 900px; font-size:12px;">
+            <thead>
+              <tr style="background:#f0f4fc;">
+                <th rowspan="2" style="width:40px; text-align:center; border-bottom:2px solid var(--border); padding:10px 8px;">No</th>
+                <th rowspan="2" style="width:90px; text-align:center; border-bottom:2px solid var(--border); padding:10px 8px;">Waktu</th>
+                <th colspan="4" style="text-align:center; border-bottom:2px solid var(--border); border-right:2px solid var(--border); padding:10px 8px;">SENSOR 1</th>
+                <th colspan="4" style="text-align:center; border-bottom:2px solid var(--border); padding:10px 8px;">SENSOR 2</th>
+              </tr>
+              <tr style="background:#f4f8fb;">
+                <th style="text-align:center; padding:10px 8px;">V</th>
+                <th style="text-align:center; padding:10px 8px;">A</th>
+                <th style="text-align:center; padding:10px 8px;">W</th>
+                <th style="text-align:center; border-right:2px solid var(--border); padding:10px 8px;">kWh</th>
+                <th style="text-align:center; padding:10px 8px;">V</th>
+                <th style="text-align:center; padding:10px 8px;">A</th>
+                <th style="text-align:center; padding:10px 8px;">W</th>
+                <th style="text-align:center; padding:10px 8px;">kWh</th>
+              </tr>
+            </thead>
+            <tbody id="integratedReportBody" style="text-align:center;">
+              <tr>
+                <td colspan="10" style="padding:20px; text-align:center; color:var(--muted);">Belum ada data untuk ditampilkan. Silakan nyalakan sensor di halaman Dashboard.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div> <!-- Selesai page-reports -->
+
   </main>
 
   <footer>
@@ -928,6 +1089,9 @@
       }
 
       updateHistoryTable();
+      if (document.getElementById('page-reports').classList.contains('active')) {
+        updateReportsPage();
+      }
     }
 
     // ── HISTORY TABLE ──
@@ -1169,6 +1333,246 @@
           
           <div class="footer">
             Laporan ini dibuat otomatis oleh Sistem Monitoring Smart Power Meter Strip - TEAM BMS 3 - POLIBATAM
+          </div>
+          <script>
+            window.onload = function() {
+              window.print();
+              setTimeout(function() { window.close(); }, 500);
+            };
+          <\/script>
+        </body>
+        </html>
+      `);
+      printWindow.document.close();
+    }
+
+    // ── PAGE NAVIGATION ──
+    function switchPage(pageId) {
+      document.querySelectorAll('.page-content').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+      
+      document.getElementById('page-' + pageId).classList.add('active');
+      const tabIdx = pageId === 'dashboard' ? 0 : 1;
+      document.querySelectorAll('.nav-tab')[tabIdx].classList.add('active');
+
+      if (pageId === 'reports') {
+        updateReportsPage();
+      }
+    }
+
+    // ── LIVE DUAL SENSOR COMPARISON PAGE ──
+    function updateReportsPage() {
+      // Summary & Status Card for both sensors
+      for (let s = 0; s < 2; s++) {
+        const badge = document.getElementById(`reportStatusBadge${s}`);
+        if (systemStates[s]) {
+          badge.textContent = 'ON';
+          badge.style.background = 'rgba(16, 185, 129, 0.12)';
+          badge.style.borderColor = 'rgba(16, 185, 129, 0.3)';
+          badge.style.color = '#10b981';
+        } else {
+          badge.textContent = 'OFF';
+          badge.style.background = 'rgba(239, 68, 68, 0.12)';
+          badge.style.borderColor = 'rgba(239, 68, 68, 0.3)';
+          badge.style.color = '#ef4444';
+        }
+
+        const len = history[s][0].length;
+        if (len > 0) {
+          const avgV = history[s][0].reduce((sum, d) => sum + d.value, 0) / len;
+          const avgW = history[s][2].reduce((sum, d) => sum + d.value, 0) / len;
+          const lastKwh = history[s][3][0]?.value || 0;
+
+          document.getElementById(`reportAvgV${s}`).textContent = avgV.toFixed(2) + ' V';
+          document.getElementById(`reportAvgW${s}`).textContent = avgW.toFixed(2) + ' W';
+          document.getElementById(`reportEnergy${s}`).textContent = lastKwh.toFixed(4) + ' kWh';
+        } else {
+          document.getElementById(`reportAvgV${s}`).textContent = '—';
+          document.getElementById(`reportAvgW${s}`).textContent = '—';
+          document.getElementById(`reportEnergy${s}`).textContent = '—';
+        }
+      }
+
+      // Populate integrated table
+      const tbody = document.getElementById('integratedReportBody');
+      const maxRows = Math.max(history[0][0].length, history[1][0].length);
+      
+      if (maxRows === 0) {
+        tbody.innerHTML = '<tr><td colspan="10" style="padding:24px; text-align:center; color:var(--muted); font-weight:500;">Belum ada data untuk ditampilkan. Silakan nyalakan sensor di halaman Dashboard.</td></tr>';
+        return;
+      }
+
+      let rowsHtml = '';
+      for (let i = 0; i < maxRows; i++) {
+        const time0 = history[0][0][i]?.time;
+        const time1 = history[1][0][i]?.time;
+        const time = time0 || time1 || '—';
+        
+        // Sensor 1 metrics
+        const v0 = history[0][0][i]?.value !== undefined ? history[0][0][i].value.toFixed(2) + ' V' : '—';
+        const a0 = history[0][1][i]?.value !== undefined ? history[0][1][i].value.toFixed(2) + ' A' : '—';
+        const w0 = history[0][2][i]?.value !== undefined ? history[0][2][i].value.toFixed(2) + ' W' : '—';
+        const kwh0 = history[0][3][i]?.value !== undefined ? history[0][3][i].value.toFixed(4) + ' kWh' : '—';
+
+        // Sensor 2 metrics
+        const v1 = history[1][0][i]?.value !== undefined ? history[1][0][i].value.toFixed(2) + ' V' : '—';
+        const a1 = history[1][1][i]?.value !== undefined ? history[1][1][i].value.toFixed(2) + ' A' : '—';
+        const w1 = history[1][2][i]?.value !== undefined ? history[1][2][i].value.toFixed(2) + ' W' : '—';
+        const kwh1 = history[1][3][i]?.value !== undefined ? history[1][3][i].value.toFixed(4) + ' kWh' : '—';
+
+        rowsHtml += `
+          <tr>
+            <td style="text-align:center; font-family:'IBM Plex Mono', monospace; font-weight:600; color:var(--muted);">${i + 1}</td>
+            <td style="text-align:center; font-family:'IBM Plex Mono', monospace; font-weight:500;">${time}</td>
+            <td style="text-align:center;">${v0}</td>
+            <td style="text-align:center;">${a0}</td>
+            <td style="text-align:center; color:#ed6c2f; font-weight:600;">${w0}</td>
+            <td style="text-align:center; border-right:2px solid var(--border); font-weight:500;">${kwh0}</td>
+            <td style="text-align:center;">${v1}</td>
+            <td style="text-align:center;">${a1}</td>
+            <td style="text-align:center; color:#ed6c2f; font-weight:600;">${w1}</td>
+            <td style="text-align:center; font-weight:500;">${kwh1}</td>
+          </tr>
+        `;
+      }
+      tbody.innerHTML = rowsHtml;
+    }
+
+    // ── COMBINED CSV EXPORT FOR BOTH SENSORS ──
+    function exportBothToCSV() {
+      const maxRows = Math.max(history[0][0].length, history[1][0].length);
+      if (maxRows === 0) {
+        alert('Belum ada data untuk diekspor!');
+        return;
+      }
+
+      let csv = 'No,Waktu,S1: Tegangan (V),S1: Arus (A),S1: Daya (W),S1: Energi (kWh),S2: Tegangan (V),S2: Arus (A),S2: Daya (W),S2: Energi (kWh)\n';
+      for (let i = 0; i < maxRows; i++) {
+        const time = history[0][0][i]?.time || history[1][0][i]?.time || '—';
+        
+        const v0 = history[0][0][i]?.value !== undefined ? history[0][0][i].value.toFixed(2) : '';
+        const a0 = history[0][1][i]?.value !== undefined ? history[0][1][i].value.toFixed(2) : '';
+        const w0 = history[0][2][i]?.value !== undefined ? history[0][2][i].value.toFixed(2) : '';
+        const kwh0 = history[0][3][i]?.value !== undefined ? history[0][3][i].value.toFixed(4) : '';
+
+        const v1 = history[1][0][i]?.value !== undefined ? history[1][0][i].value.toFixed(2) : '';
+        const a1 = history[1][1][i]?.value !== undefined ? history[1][1][i].value.toFixed(2) : '';
+        const w1 = history[1][2][i]?.value !== undefined ? history[1][2][i].value.toFixed(2) : '';
+        const kwh1 = history[1][3][i]?.value !== undefined ? history[1][3][i].value.toFixed(4) : '';
+
+        csv += `${i + 1},${time},${v0},${a0},${w0},${kwh0},${v1},${a1},${w1},${kwh1}\n`;
+      }
+
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.setAttribute('href', url);
+      link.setAttribute('download', `Smart_Power_Meter_Combined_Report.csv`);
+      link.style.visibility = 'hidden';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+
+    // ── COMBINED PDF PRINT REPORT FOR BOTH SENSORS ──
+    function exportBothToPDF() {
+      const maxRows = Math.max(history[0][0].length, history[1][0].length);
+      if (maxRows === 0) {
+        alert('Belum ada data untuk dicetak!');
+        return;
+      }
+
+      let tableRows = '';
+      for (let i = 0; i < maxRows; i++) {
+        const time = history[0][0][i]?.time || history[1][0][i]?.time || '—';
+        
+        const v0 = history[0][0][i]?.value !== undefined ? history[0][0][i].value.toFixed(2) + ' V' : '—';
+        const a0 = history[0][1][i]?.value !== undefined ? history[0][1][i].value.toFixed(2) + ' A' : '—';
+        const w0 = history[0][2][i]?.value !== undefined ? history[0][2][i].value.toFixed(2) + ' W' : '—';
+        const kwh0 = history[0][3][i]?.value !== undefined ? history[0][3][i].value.toFixed(4) + ' kWh' : '—';
+
+        const v1 = history[1][0][i]?.value !== undefined ? history[1][0][i].value.toFixed(2) + ' V' : '—';
+        const a1 = history[1][1][i]?.value !== undefined ? history[1][1][i].value.toFixed(2) + ' A' : '—';
+        const w1 = history[1][2][i]?.value !== undefined ? history[1][2][i].value.toFixed(2) + ' W' : '—';
+        const kwh1 = history[1][3][i]?.value !== undefined ? history[1][3][i].value.toFixed(4) + ' kWh' : '—';
+
+        tableRows += `
+          <tr>
+            <td>${i + 1}</td>
+            <td>${time}</td>
+            <td>${v0}</td>
+            <td>${a0}</td>
+            <td>${w0}</td>
+            <td style="border-right: 2px solid #213661; font-weight: bold;">${kwh0}</td>
+            <td>${v1}</td>
+            <td>${a1}</td>
+            <td>${w1}</td>
+            <td style="font-weight: bold;">${kwh1}</td>
+          </tr>
+        `;
+      }
+
+      const now = new Date();
+      const dateStr = now.toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+
+      const printWindow = window.open('', '_blank');
+      printWindow.document.write(`
+        <html>
+        <head>
+          <title>Laporan Smart Power Meter - Kedua Sensor</title>
+          <style>
+            body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; color: #2c3e50; padding: 40px; }
+            .header { border-bottom: 3px solid #213661; padding-bottom: 20px; margin-bottom: 30px; display: flex; justify-content: space-between; align-items: center; }
+            .logo-title { font-size: 24px; font-weight: bold; color: #213661; text-transform: uppercase; }
+            .sub-title { font-size: 14px; color: #ed6c2f; font-weight: 600; margin-top: 4px; }
+            .meta-info { font-size: 11px; text-align: right; color: #7f8c8d; line-height: 1.5; }
+            table { width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 11px; }
+            th, td { border: 1px solid #d2dfeb; padding: 10px 8px; text-align: center; }
+            th { background-color: #f0f4fc; color: #213661; font-weight: bold; }
+            tr:nth-child(even) { background-color: #f9fbfd; }
+            .footer { margin-top: 50px; text-align: center; font-size: 11px; color: #bdc3c7; border-top: 1px solid #eee; padding-top: 20px; }
+          </style>
+        </head>
+        <body>
+          <div class="header">
+            <div>
+              <div class="logo-title">Smart Power Meter Strip</div>
+              <div class="sub-title">TEAM BMS 3 - LAPORAN PEMANTAUAN TERPADU KEDUA SENSOR</div>
+            </div>
+            <div class="meta-info">
+              <div>Dicetak pada: ${dateStr}</div>
+              <div>Sensor 1: ${systemStates[0] ? 'ON' : 'OFF'}</div>
+              <div>Sensor 2: ${systemStates[1] ? 'ON' : 'OFF'}</div>
+            </div>
+          </div>
+          
+          <h3 style="color:#213661; border-bottom: 1px solid #eee; padding-bottom: 8px;">Tabel Data Riwayat Gabungan (Terbaru)</h3>
+          <table>
+            <thead>
+              <tr>
+                <th rowspan="2">No</th>
+                <th rowspan="2">Waktu</th>
+                <th colspan="4" style="border-right: 2px solid #213661;">SENSOR 1</th>
+                <th colspan="4">SENSOR 2</th>
+              </tr>
+              <tr>
+                <th>Tegangan</th>
+                <th>Arus</th>
+                <th>Daya</th>
+                <th style="border-right: 2px solid #213661;">Energi</th>
+                <th>Tegangan</th>
+                <th>Arus</th>
+                <th>Daya</th>
+                <th>Energi</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${tableRows}
+            </tbody>
+          </table>
+          
+          <div class="footer">
+            Laporan Gabungan Multi-Sensor ini dibuat otomatis oleh Sistem Monitoring Smart Power Meter Strip - TEAM BMS 3 - POLIBATAM
           </div>
           <script>
             window.onload = function() {
