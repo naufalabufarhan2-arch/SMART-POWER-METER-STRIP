@@ -9,10 +9,10 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
   <style>
     :root {
-      --bg: #f8fafc;
+      --bg: #edf3f8; /* Soft ice-blue body background */
       --surface: #ffffff;
       --surface2: #f1f5f9;
-      --border: #e2e8f0;
+      --border: #d2dfeb;
       --accent: #213661; /* Polibatam Navy */
       --accent2: #71c4e7; /* Polibatam Light Blue */
       --accent3: #ed6c2f; /* Polibatam Orange */
@@ -186,7 +186,7 @@
     }
 
     .param-card {
-      background: var(--surface);
+      background: var(--card-bg, var(--surface));
       border: 1px solid var(--border);
       border-radius: 10px;
       padding: 20px;
@@ -194,6 +194,7 @@
       transition: all 0.3s ease;
       position: relative;
       overflow: hidden;
+      box-shadow: 0 4px 15px rgba(33, 54, 97, 0.02);
     }
 
     .param-card::before {
@@ -202,17 +203,17 @@
       top: 0;
       left: 0;
       right: 0;
-      height: 2px;
+      height: 3px;
       background: var(--card-accent, var(--accent));
-      opacity: 0;
+      opacity: 0.4;
       transition: opacity 0.3s;
     }
 
     .param-card:hover {
       border-color: var(--card-accent, var(--accent));
-      background: var(--surface);
+      background: var(--card-bg-active, var(--surface2));
       transform: translateY(-2px);
-      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.08);
+      box-shadow: 0 12px 30px rgba(33, 54, 97, 0.08);
     }
 
     .param-card:hover::before {
@@ -221,8 +222,8 @@
 
     .param-card.active {
       border-color: var(--card-accent, var(--accent));
-      background: var(--surface);
-      box-shadow: 0 10px 40px rgba(0,0,0,0.1), inset 0 0 0 1px var(--card-accent);
+      background: var(--card-bg-active, var(--surface2));
+      box-shadow: 0 10px 30px rgba(33, 54, 97, 0.06), inset 0 0 0 1px var(--card-accent);
     }
 
     .param-card.active::before {
@@ -230,23 +231,33 @@
     }
 
     .param-card:nth-child(1) {
-      --card-accent: #00d4ff;
+      --card-accent: #213661;
+      --card-bg: #f0f4fc;
+      --card-bg-active: #e1ecfa;
     }
 
     .param-card:nth-child(2) {
-      --card-accent: #00ff9d;
+      --card-accent: #0ea5e9;
+      --card-bg: #f0f9ff;
+      --card-bg-active: #e0f2fe;
     }
 
     .param-card:nth-child(3) {
-      --card-accent: #ff6b35;
+      --card-accent: #ed6c2f;
+      --card-bg: #fff7ed;
+      --card-bg-active: #ffedd5;
     }
 
     .param-card:nth-child(4) {
-      --card-accent: #f59e0b;
+      --card-accent: #fbc02d;
+      --card-bg: #fefce8;
+      --card-bg-active: #fef9c3;
     }
 
     .param-card:nth-child(5) {
-      --card-accent: #a78bfa;
+      --card-accent: #ab47bc;
+      --card-bg: #f5f3ff;
+      --card-bg-active: #f3e8ff;
     }
 
     .param-label {
@@ -307,12 +318,13 @@
 
     /* ── CHART PANEL ── */
     .panel {
-      background: var(--surface);
-      border: 1px solid var(--border);
+      background: #f4f8fb;
+      border: 1px solid #dbe6ee;
       border-radius: 10px;
       padding: 24px;
       position: relative;
       overflow: hidden;
+      box-shadow: 0 4px 20px rgba(33, 54, 97, 0.03);
     }
 
     .panel-title {
@@ -529,10 +541,10 @@
     }
 
     .sensor-tab.active {
-      background: linear-gradient(135deg, rgba(0, 212, 255, 0.1), transparent);
+      background: linear-gradient(135deg, rgba(113, 196, 231, 0.2), transparent);
       border-color: var(--accent);
       color: var(--accent);
-      box-shadow: inset 0 0 15px rgba(0, 212, 255, 0.1);
+      box-shadow: inset 0 0 15px rgba(113, 196, 231, 0.1);
     }
 
     .sensor-tab-dot {
