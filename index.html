@@ -1511,8 +1511,15 @@
           const lastKwh = history[s][3][0]?.value || 0;
 
           const avgHz = history[s][4].reduce((sum, d) => sum + d.value, 0) / len;
+
+          document.getElementById(`reportAvgV${s}`).textContent = avgV.toFixed(2) + ' V';
+          document.getElementById(`reportAvgW${s}`).textContent = avgW.toFixed(2) + ' W';
+          document.getElementById(`reportEnergy${s}`).textContent = lastKwh.toFixed(4) + ' kWh';
           document.getElementById(`reportAvgHz${s}`).textContent = avgHz.toFixed(2) + ' Hz';
         } else {
+          document.getElementById(`reportAvgV${s}`).textContent = '—';
+          document.getElementById(`reportAvgW${s}`).textContent = '—';
+          document.getElementById(`reportEnergy${s}`).textContent = '—';
           document.getElementById(`reportAvgHz${s}`).textContent = '—';
         }
       }
