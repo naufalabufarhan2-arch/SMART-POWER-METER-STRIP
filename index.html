@@ -30,7 +30,7 @@
     };
   </script>
   <link
-    href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap"
     rel="stylesheet">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
   <style>
@@ -716,7 +716,6 @@
     </div>
   </header>
 
-  <!-- ── SUB-HEADER NAVIGATION BAR ── -->
   <div class="nav-bar">
     <div class="nav-tab active" onclick="switchPage('dashboard')">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
@@ -740,7 +739,6 @@
   </div>
 
   <main>
-    <!-- ── HALAMAN 1: DASHBOARD UTAMA ── -->
     <div id="page-dashboard" class="page-content active">
 
       <div class="section-label">Pilih Sensor</div>
@@ -793,7 +791,6 @@
 
       <div class="bottom-grid">
 
-        <!-- Chart -->
         <div class="panel">
           <div class="panel-title">
             <div class="panel-title-text">
@@ -825,7 +822,6 @@
           </div>
         </div>
 
-        <!-- History Table -->
         <div class="panel">
           <div class="panel-title" style="display:flex; justify-content:space-between; align-items:center;">
             <div class="panel-title-text">
@@ -870,11 +866,7 @@
           </div>
         </div>
 
-      </div> <!-- Selesai bottom-grid -->
-    </div> <!-- Selesai page-dashboard -->
-
-    <!-- ── HALAMAN 2: LAPORAN PERBANDINGAN KEDUA SENSOR ── -->
-    <div id="page-reports" class="page-content">
+      </div> </div> <div id="page-reports" class="page-content">
       <div class="reports-header"
         style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px; flex-wrap:wrap; gap:16px;">
         <div class="section-label" style="margin-bottom:0;">Laporan Perbandingan Kedua Sensor</div>
@@ -901,9 +893,7 @@
         </div>
       </div>
 
-      <!-- Quick Summary Cards for both sensors side by side -->
       <div class="bottom-grid" style="grid-template-columns: 1fr 1fr; margin-bottom:32px;">
-        <!-- Card Sensor 1 -->
         <div class="panel" style="background:#f4f8fb; border-color:#dbe6ee;">
           <div
             style="font-size:16px; font-weight:700; color:var(--accent); margin-bottom:16px; display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #dbe6ee; padding-bottom:8px;">
@@ -911,40 +901,47 @@
             <span class="status-badge" id="reportStatusBadge0"
               style="padding:4px 10px; font-size:10px; pointer-events:none; border-radius:4px;">MEMUAT...</span>
           </div>
-          <div style="display:grid; grid-template-columns:repeat(4, 1fr); gap:12px;">
+          <div style="display:grid; grid-template-columns:repeat(5, 1fr); gap:8px;">
             <div>
               <div
-                style="font-size:9px; color:var(--muted); text-transform:uppercase; font-family:'IBM Plex Mono', monospace; font-weight:600; letter-spacing:1px; margin-bottom:4px;">
+                style="font-size:9px; color:var(--muted); text-transform:uppercase; font-family:'IBM Plex Mono', monospace; font-weight:600; letter-spacing:0.5px; margin-bottom:4px;">
                 Tegangan Rata-Rata</div>
               <div id="reportAvgV0"
-                style="font-size:18px; font-weight:700; color:var(--accent); font-family:'Rajdhani', sans-serif;">—
+                style="font-size:16px; font-weight:700; color:var(--accent); font-family:'Rajdhani', sans-serif;">—
               </div>
             </div>
             <div>
               <div
-                style="font-size:9px; color:var(--muted); text-transform:uppercase; font-family:'IBM Plex Mono', monospace; font-weight:600; letter-spacing:1px; margin-bottom:4px;">
+                style="font-size:9px; color:var(--muted); text-transform:uppercase; font-family:'IBM Plex Mono', monospace; font-weight:600; letter-spacing:0.5px; margin-bottom:4px;">
+                Arus Rata-Rata</div>
+              <div id="reportAvgA0"
+                style="font-size:16px; font-weight:700; color:#0ea5e9; font-family:'Rajdhani', sans-serif;">—
+              </div>
+            </div>
+            <div>
+              <div
+                style="font-size:9px; color:var(--muted); text-transform:uppercase; font-family:'IBM Plex Mono', monospace; font-weight:600; letter-spacing:0.5px; margin-bottom:4px;">
                 Daya Rata-Rata</div>
               <div id="reportAvgW0"
-                style="font-size:18px; font-weight:700; color:#ed6c2f; font-family:'Rajdhani', sans-serif;">—</div>
+                style="font-size:16px; font-weight:700; color:#ed6c2f; font-family:'Rajdhani', sans-serif;">—</div>
             </div>
             <div>
               <div
-                style="font-size:9px; color:var(--muted); text-transform:uppercase; font-family:'IBM Plex Mono', monospace; font-weight:600; letter-spacing:1px; margin-bottom:4px;">
+                style="font-size:9px; color:var(--muted); text-transform:uppercase; font-family:'IBM Plex Mono', monospace; font-weight:600; letter-spacing:0.5px; margin-bottom:4px;">
                 Total Energi</div>
               <div id="reportEnergy0"
-                style="font-size:18px; font-weight:700; color:#eab308; font-family:'Rajdhani', sans-serif;">—</div>
+                style="font-size:16px; font-weight:700; color:#eab308; font-family:'Rajdhani', sans-serif;">—</div>
             </div>
             <div>
               <div
-                style="font-size:9px; color:var(--muted); text-transform:uppercase; font-family:'IBM Plex Mono', monospace; font-weight:600; letter-spacing:1px; margin-bottom:4px;">
+                style="font-size:9px; color:var(--muted); text-transform:uppercase; font-family:'IBM Plex Mono', monospace; font-weight:600; letter-spacing:0.5px; margin-bottom:4px;">
                 Frekuensi Rata-Rata</div>
               <div id="reportAvgHz0"
-                style="font-size:18px; font-weight:700; color:#10b981; font-family:'Rajdhani', sans-serif;">—</div>
+                style="font-size:16px; font-weight:700; color:#10b981; font-family:'Rajdhani', sans-serif;">—</div>
             </div>
           </div>
         </div>
 
-        <!-- Card Sensor 2 -->
         <div class="panel" style="background:#f4f8fb; border-color:#dbe6ee;">
           <div
             style="font-size:16px; font-weight:700; color:var(--accent); margin-bottom:16px; display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #dbe6ee; padding-bottom:8px;">
@@ -952,41 +949,48 @@
             <span class="status-badge" id="reportStatusBadge1"
               style="padding:4px 10px; font-size:10px; pointer-events:none; border-radius:4px;">MEMUAT...</span>
           </div>
-          <div style="display:grid; grid-template-columns:repeat(4, 1fr); gap:12px;">
+          <div style="display:grid; grid-template-columns:repeat(5, 1fr); gap:8px;">
             <div>
               <div
-                style="font-size:9px; color:var(--muted); text-transform:uppercase; font-family:'IBM Plex Mono', monospace; font-weight:600; letter-spacing:1px; margin-bottom:4px;">
+                style="font-size:9px; color:var(--muted); text-transform:uppercase; font-family:'IBM Plex Mono', monospace; font-weight:600; letter-spacing:0.5px; margin-bottom:4px;">
                 Tegangan Rata-Rata</div>
               <div id="reportAvgV1"
-                style="font-size:18px; font-weight:700; color:var(--accent); font-family:'Rajdhani', sans-serif;">—
+                style="font-size:16px; font-weight:700; color:var(--accent); font-family:'Rajdhani', sans-serif;">—
               </div>
             </div>
             <div>
               <div
-                style="font-size:9px; color:var(--muted); text-transform:uppercase; font-family:'IBM Plex Mono', monospace; font-weight:600; letter-spacing:1px; margin-bottom:4px;">
+                style="font-size:9px; color:var(--muted); text-transform:uppercase; font-family:'IBM Plex Mono', monospace; font-weight:600; letter-spacing:0.5px; margin-bottom:4px;">
+                Arus Rata-Rata</div>
+              <div id="reportAvgA1"
+                style="font-size:16px; font-weight:700; color:#0ea5e9; font-family:'Rajdhani', sans-serif;">—
+              </div>
+            </div>
+            <div>
+              <div
+                style="font-size:9px; color:var(--muted); text-transform:uppercase; font-family:'IBM Plex Mono', monospace; font-weight:600; letter-spacing:0.5px; margin-bottom:4px;">
                 Daya Rata-Rata</div>
               <div id="reportAvgW1"
-                style="font-size:18px; font-weight:700; color:#ed6c2f; font-family:'Rajdhani', sans-serif;">—</div>
+                style="font-size:16px; font-weight:700; color:#ed6c2f; font-family:'Rajdhani', sans-serif;">—</div>
             </div>
             <div>
               <div
-                style="font-size:9px; color:var(--muted); text-transform:uppercase; font-family:'IBM Plex Mono', monospace; font-weight:600; letter-spacing:1px; margin-bottom:4px;">
+                style="font-size:9px; color:var(--muted); text-transform:uppercase; font-family:'IBM Plex Mono', monospace; font-weight:600; letter-spacing:0.5px; margin-bottom:4px;">
                 Total Energi</div>
               <div id="reportEnergy1"
-                style="font-size:18px; font-weight:700; color:#eab308; font-family:'Rajdhani', sans-serif;">—</div>
+                style="font-size:16px; font-weight:700; color:#eab308; font-family:'Rajdhani', sans-serif;">—</div>
             </div>
             <div>
               <div
-                style="font-size:9px; color:var(--muted); text-transform:uppercase; font-family:'IBM Plex Mono', monospace; font-weight:600; letter-spacing:1px; margin-bottom:4px;">
+                style="font-size:9px; color:var(--muted); text-transform:uppercase; font-family:'IBM Plex Mono', monospace; font-weight:600; letter-spacing:0.5px; margin-bottom:4px;">
                 Frekuensi Rata-Rata</div>
               <div id="reportAvgHz1"
-                style="font-size:18px; font-weight:700; color:#10b981; font-family:'Rajdhani', sans-serif;">—</div>
+                style="font-size:16px; font-weight:700; color:#10b981; font-family:'Rajdhani', sans-serif;">—</div>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- Integrated side-by-side table -->
       <div class="panel" style="padding:0; overflow:hidden;">
         <div class="panel-title"
           style="padding:20px 24px 12px 24px; margin-bottom:0; border-bottom:1px solid var(--border);">
@@ -1030,9 +1034,7 @@
           </table>
         </div>
       </div>
-    </div> <!-- Selesai page-reports -->
-
-  </main>
+    </div> </main>
 
   <footer>
     <span>© 2026 Power Monitoring System</span>
@@ -1318,6 +1320,7 @@
       updateUptimeDisplay();
     }
 
+    // ── SCRIPT CORE INTERVALS ──
     function startIntervals() {
       if (tickInterval) return;
       tickInterval = setInterval(tick, 2000);
@@ -1507,17 +1510,19 @@
         const len = history[s][0].length;
         if (len > 0) {
           const avgV = history[s][0].reduce((sum, d) => sum + d.value, 0) / len;
+          const avgA = history[s][1].reduce((sum, d) => sum + d.value, 0) / len;
           const avgW = history[s][2].reduce((sum, d) => sum + d.value, 0) / len;
           const lastKwh = history[s][3][0]?.value || 0;
-
           const avgHz = history[s][4].reduce((sum, d) => sum + d.value, 0) / len;
 
           document.getElementById(`reportAvgV${s}`).textContent = avgV.toFixed(2) + ' V';
+          document.getElementById(`reportAvgA${s}`).textContent = avgA.toFixed(2) + ' A';
           document.getElementById(`reportAvgW${s}`).textContent = avgW.toFixed(2) + ' W';
           document.getElementById(`reportEnergy${s}`).textContent = lastKwh.toFixed(4) + ' kWh';
           document.getElementById(`reportAvgHz${s}`).textContent = avgHz.toFixed(2) + ' Hz';
         } else {
           document.getElementById(`reportAvgV${s}`).textContent = '—';
+          document.getElementById(`reportAvgA${s}`).textContent = '—';
           document.getElementById(`reportAvgW${s}`).textContent = '—';
           document.getElementById(`reportEnergy${s}`).textContent = '—';
           document.getElementById(`reportAvgHz${s}`).textContent = '—';
@@ -1529,7 +1534,7 @@
       const maxRows = Math.max(history[0][0].length, history[1][0].length);
 
       if (maxRows === 0) {
-        tbody.innerHTML = '<tr><td colspan="10" style="padding:24px; text-align:center; color:var(--muted); font-weight:500;">Belum ada data untuk ditampilkan. Silakan nyalakan sensor di halaman Dashboard.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="12" style="padding:24px; text-align:center; color:var(--muted); font-weight:500;">Belum ada data untuk ditampilkan. Silakan nyalakan sensor di halaman Dashboard.</td></tr>';
         return;
       }
 
@@ -1591,7 +1596,7 @@
         const kwh0 = history[0][3][i]?.value !== undefined ? history[0][3][i].value.toFixed(4) : '';
         const hz0 = history[0][4][i]?.value !== undefined ? history[0][4][i].value.toFixed(2) : '';
 
-        const v1 = history[1][0][i]?.value !== undefined ? history[1][0][i].value.toFixed(2) : '';
+        const v1 = history[1][0][i]?.value !== undefined ? history[1][1][i].value.toFixed(2) : '';
         const a1 = history[1][1][i]?.value !== undefined ? history[1][1][i].value.toFixed(2) : '';
         const w1 = history[1][2][i]?.value !== undefined ? history[1][2][i].value.toFixed(2) : '';
         const kwh1 = history[1][3][i]?.value !== undefined ? history[1][3][i].value.toFixed(4) : '';
