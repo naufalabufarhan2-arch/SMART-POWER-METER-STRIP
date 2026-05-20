@@ -911,7 +911,7 @@
             <span class="status-badge" id="reportStatusBadge0"
               style="padding:4px 10px; font-size:10px; pointer-events:none; border-radius:4px;">MEMUAT...</span>
           </div>
-          <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:12px;">
+          <div style="display:grid; grid-template-columns:repeat(4, 1fr); gap:12px;">
             <div>
               <div
                 style="font-size:9px; color:var(--muted); text-transform:uppercase; font-family:'IBM Plex Mono', monospace; font-weight:600; letter-spacing:1px; margin-bottom:4px;">
@@ -934,6 +934,13 @@
               <div id="reportEnergy0"
                 style="font-size:18px; font-weight:700; color:#eab308; font-family:'Rajdhani', sans-serif;">—</div>
             </div>
+            <div>
+              <div
+                style="font-size:9px; color:var(--muted); text-transform:uppercase; font-family:'IBM Plex Mono', monospace; font-weight:600; letter-spacing:1px; margin-bottom:4px;">
+                Frekuensi Rata-Rata</div>
+              <div id="reportAvgHz0"
+                style="font-size:18px; font-weight:700; color:#10b981; font-family:'Rajdhani', sans-serif;">—</div>
+            </div>
           </div>
         </div>
 
@@ -945,7 +952,7 @@
             <span class="status-badge" id="reportStatusBadge1"
               style="padding:4px 10px; font-size:10px; pointer-events:none; border-radius:4px;">MEMUAT...</span>
           </div>
-          <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:12px;">
+          <div style="display:grid; grid-template-columns:repeat(4, 1fr); gap:12px;">
             <div>
               <div
                 style="font-size:9px; color:var(--muted); text-transform:uppercase; font-family:'IBM Plex Mono', monospace; font-weight:600; letter-spacing:1px; margin-bottom:4px;">
@@ -967,6 +974,13 @@
                 Total Energi</div>
               <div id="reportEnergy1"
                 style="font-size:18px; font-weight:700; color:#eab308; font-family:'Rajdhani', sans-serif;">—</div>
+            </div>
+            <div>
+              <div
+                style="font-size:9px; color:var(--muted); text-transform:uppercase; font-family:'IBM Plex Mono', monospace; font-weight:600; letter-spacing:1px; margin-bottom:4px;">
+                Frekuensi Rata-Rata</div>
+              <div id="reportAvgHz1"
+                style="font-size:18px; font-weight:700; color:#10b981; font-family:'Rajdhani', sans-serif;">—</div>
             </div>
           </div>
         </div>
@@ -1496,13 +1510,10 @@
           const avgW = history[s][2].reduce((sum, d) => sum + d.value, 0) / len;
           const lastKwh = history[s][3][0]?.value || 0;
 
-          document.getElementById(`reportAvgV${s}`).textContent = avgV.toFixed(2) + ' V';
-          document.getElementById(`reportAvgW${s}`).textContent = avgW.toFixed(2) + ' W';
-          document.getElementById(`reportEnergy${s}`).textContent = lastKwh.toFixed(4) + ' kWh';
+          const avgHz = history[s][4].reduce((sum, d) => sum + d.value, 0) / len;
+          document.getElementById(`reportAvgHz${s}`).textContent = avgHz.toFixed(2) + ' Hz';
         } else {
-          document.getElementById(`reportAvgV${s}`).textContent = '—';
-          document.getElementById(`reportAvgW${s}`).textContent = '—';
-          document.getElementById(`reportEnergy${s}`).textContent = '—';
+          document.getElementById(`reportAvgHz${s}`).textContent = '—';
         }
       }
 
