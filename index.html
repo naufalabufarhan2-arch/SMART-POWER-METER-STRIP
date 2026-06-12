@@ -1144,16 +1144,15 @@
 
     // ── FIREBASE SETUP ──
     // GANTI KONFIGURASI DI BAWAH INI DENGAN KONFIGURASI FIREBASE ANDA
-   const firebaseConfig = {
-  apiKey: "AIzaSyAP06GuqBy4RIfDa3ngshksvnrfWcn09l8",
-  authDomain: "smart-power-meter-f72c9.firebaseapp.com",
-  databaseURL: "https://smart-power-meter-f72c9-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId: "smart-power-meter-f72c9",
-  storageBucket: "smart-power-meter-f72c9.firebasestorage.app",
-  messagingSenderId: "331580059264",
-  appId: "1:331580059264:web:07dcc54bbcbabb22afc065",
-  measurementId: "G-VVETL2YN4Q"
-};
+    const firebaseConfig = {
+      apiKey: "API_KEY_ANDA",
+      authDomain: "PROJECT_ID.firebaseapp.com",
+      databaseURL: "https://PROJECT_ID-default-rtdb.firebaseio.com",
+      projectId: "PROJECT_ID",
+      storageBucket: "PROJECT_ID.appspot.com",
+      messagingSenderId: "SENDER_ID",
+      appId: "APP_ID"
+    };
 
     // Initialize Firebase
     if (!firebase.apps.length) {
@@ -1185,12 +1184,12 @@
         const now = new Date();
         const timeStr = `${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
 
-        // Mengambil data dari JSON Firebase
-        const tegangan = parseFloat(data.Tegangan) || 0;
-        const arus = parseFloat(data.Arus) || 0;
-        const daya = parseFloat(data.Daya) || 0;
-        const energi = parseFloat(data.Energi) || 0;
-        const frekuensi = parseFloat(data.Frekuensi) || 0;
+        // Mengambil data dari JSON Firebase berdasarkan format ESP32 Anda
+        const tegangan = parseFloat(data.Voltage) || 0;
+        const arus = parseFloat(data.Current) || 0;
+        const daya = parseFloat(data.Power) || 0;
+        const energi = parseFloat(data.Energy) || parseFloat(data['Energy/s']) || 0;
+        const frekuensi = parseFloat(data.Frequency) || 0;
 
         const currentVals = [tegangan, arus, daya, energi, frekuensi];
 
@@ -1315,6 +1314,12 @@
     function toggleSystem() {
       systemStates[activeSensor] = !systemStates[activeSensor];
       updateSystemUI();
+
+      // Kirim perintah ON/OFF ke Firebase
+      const path = sensorPaths[activeSensor];
+      database.ref(path).update({
+        Relay: systemStates[activeSensor] ? "ON" : "OFF"
+      });
     }
 
     function updateSystemUI() {
