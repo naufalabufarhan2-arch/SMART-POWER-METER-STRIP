@@ -1170,14 +1170,24 @@
         database.ref(path).on('value', (snapshot) => {
           const data = snapshot.val();
           if (data) {
-             processSensorData(s, data);
+            // Sync relay status dari Firebase ke state lokal
+            if (data.relay !== undefined) {
+              const relayOn = (String(data.relay).toUpperCase() === 'ON');
+              if (systemStates[s] !== relayOn) {
+                systemStates[s] = relayOn;
+                if (s === activeSensor) updateSystemUI();
+              }
+            }
+            processSensorData(s, data);
           }
+        }, (error) => {
+          console.error('Firebase error path', path, error);
         });
       }
     }
 
     function processSensorData(s, data) {
-        if (!systemStates[s]) return; // Skip if sensor is OFF
+        // Tetap update UI meskipun relay OFF (agar data tetap tampil)
         
         const now = new Date();
         const timeStr = `${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
@@ -1310,14 +1320,21 @@
 
     // ── SYSTEM CONTROL ──
     function toggleSystem() {
-      systemStates[activeSensor] = !systemStates[activeSensor];
-      updateSystemUI();
-
-      // Kirim perintah ON/OFF ke Firebase
+      const newState = !systemStates[activeSensor];
+      const relayVal = newState ? "ON" : "OFF";
       const path = sensorPaths[activeSensor];
-      database.ref(path).update({
-        Relay: systemStates[activeSensor] ? "ON" : "OFF"
-      });
+
+      // Kirim perintah ke Firebase dulu, update UI setelah Firebase konfirmasi
+      database.ref(path).update({ relay: relayVal })
+        .then(() => {
+          console.log(`Relay ${path} set to ${relayVal}`);
+          systemStates[activeSensor] = newState;
+          updateSystemUI();
+        })
+        .catch((err) => {
+          console.error('Gagal update relay:', err);
+          alert('Gagal kirim perintah ke Firebase: ' + err.message);
+        });
     }
 
     function updateSystemUI() {
