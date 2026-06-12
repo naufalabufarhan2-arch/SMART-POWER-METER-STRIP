@@ -1143,61 +1143,81 @@
       }
     });
 
-    // ── SIMULATE DATA ──
-    function rand(base, noise) {
-      return base + (Math.random() - 0.5) * noise * 2;
-    }
+   async function tick()
+{
+    try
+    {
+        const response = await fetch(
+            "sensor.json?t=" + Date.now()
+        );
 
-    function tick() {
-      const now = new Date();
-      const timeStr = `${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
+        const data = await response.json();
 
-      // Update data for both sensors
-      for (let s = 0; s < 2; s++) {
-        if (!systemStates[s]) continue; // Skip if sensor is OFF
+        const now = new Date();
+        const timeStr =
+            now.toLocaleTimeString("id-ID");
 
-        // 1. Tegangan: PLN standard single-phase 220V with typical grid fluctuations
-        const baseTegangan = s === 1 ? 218.9 : 220.2; // slight difference between sensors
-        const tegangan = rand(baseTegangan, 2.5);
-
-        // 2. Arus: Simulated load in Amperes (typical home appliance, e.g. 1.2A to 3.5A)
-        const baseArus = s === 1 ? 1.95 : 2.45;
-        const arus = rand(baseArus, 0.5);
-
-        // 3. Frekuensi: PLN Grid strict standard 50Hz (very tiny fluctuations)
-        const frekuensi = rand(50.00, 0.03);
-
-        // 4. Daya (W): P = V * I * cos Phi (Power factor assumed 0.85 typical)
-        const cosPhi = 0.85;
-        const daya = tegangan * arus * cosPhi;
-
-        // 5. Energi (kWh): Incremental cumulative total
-        cumulativeEnergy[s] += (daya / 1000.0) * (2.0 / 3600.0); // 2 seconds tick interval
-
-        // Map values to PARAMS indices
-        const currentVals = [
-          parseFloat(tegangan.toFixed(2)),
-          parseFloat(arus.toFixed(2)),
-          parseFloat(daya.toFixed(2)),
-          parseFloat(cumulativeEnergy[s].toFixed(4)), // 4 decimals for high precision kWh display
-          parseFloat(frekuensi.toFixed(2))
+        const currentVals =
+        [
+            parseFloat(data.voltage || 0),
+            parseFloat(data.current || 0),
+            parseFloat(data.power || 0),
+            parseFloat(data.energy || 0),
+            parseFloat(data.frequency || 0)
         ];
 
-        currentVals.forEach((val, i) => {
-          history[s][i].unshift({ time: timeStr, value: val });
-          if (history[s][i].length > MAX_HISTORY) history[s][i].pop();
+        currentVals.forEach((val, i) =>
+        {
+            history[0][i].unshift({
+                time: timeStr,
+                value: val
+            });
 
-          // Update card UI only if this is the active sensor
-          if (s === activeSensor) {
-            const el = document.getElementById(`val-${i}`);
-            el.textContent = val.toFixed(PARAMS[i].decimals);
-            el.classList.remove('flash');
-            void el.offsetWidth;
-            el.classList.add('flash');
-          }
+            if(history[0][i].length > MAX_HISTORY)
+            {
+                history[0][i].pop();
+            }
+
+            if(activeSensor === 0)
+            {
+                const el =
+                    document.getElementById(`val-${i}`);
+
+                if(el)
+                {
+                    el.textContent =
+                        val.toFixed(PARAMS[i].decimals);
+                }
+            }
         });
-      }
 
+        totalSamples++;
+
+        document.getElementById(
+            "footerSamples"
+        ).textContent =
+            totalSamples + " sampel";
+
+        const points =
+            history[0][activeParam]
+            .slice(0, MAX_POINTS)
+            .reverse();
+
+        chart.data.labels =
+            points.map(d => d.time);
+
+        chart.data.datasets[0].data =
+            points.map(d => d.value);
+
+        chart.update();
+
+        updateHistoryTable();
+    }
+    catch(error)
+    {
+        console.error(error);
+    }
+}
       totalSamples++;
       document.getElementById('footerSamples').textContent = `${totalSamples} sampel`;
 
