@@ -1143,80 +1143,43 @@
       }
     });
 
-   async function tick()
+async function tick()
 {
-    try
+  try
+  {
+    const response = await fetch(
+      "https://smart-power-meter-f72c9-default-rtdb.asia-southeast1.firebasedatabase.app/pzem.json"
+    );
+
+    const data = await response.json();
+
+    if(!data) return;
+
+    const values = [
+      Number(data.voltage || 0),
+      Number(data.current || 0),
+      Number(data.power || 0),
+      Number(data.energy || 0),
+      Number(data.frequency || 0)
+    ];
+
+    values.forEach((val,i)=>
     {
-        const response = await fetch(
-            "sensor.json?t=" + Date.now()
-        );
+      const el =
+      document.getElementById(`val-${i}`);
 
-        const data = await response.json();
+      if(el)
+      {
+        el.textContent =
+        val.toFixed(PARAMS[i].decimals);
+      }
+    });
 
-        const now = new Date();
-        const timeStr =
-            now.toLocaleTimeString("id-ID");
-
-        const currentVals =
-        [
-            parseFloat(data.voltage || 0),
-            parseFloat(data.current || 0),
-            parseFloat(data.power || 0),
-            parseFloat(data.energy || 0),
-            parseFloat(data.frequency || 0)
-        ];
-
-        currentVals.forEach((val, i) =>
-        {
-            history[0][i].unshift({
-                time: timeStr,
-                value: val
-            });
-
-            if(history[0][i].length > MAX_HISTORY)
-            {
-                history[0][i].pop();
-            }
-
-            if(activeSensor === 0)
-            {
-                const el =
-                    document.getElementById(`val-${i}`);
-
-                if(el)
-                {
-                    el.textContent =
-                        val.toFixed(PARAMS[i].decimals);
-                }
-            }
-        });
-
-        totalSamples++;
-
-        document.getElementById(
-            "footerSamples"
-        ).textContent =
-            totalSamples + " sampel";
-
-        const points =
-            history[0][activeParam]
-            .slice(0, MAX_POINTS)
-            .reverse();
-
-        chart.data.labels =
-            points.map(d => d.time);
-
-        chart.data.datasets[0].data =
-            points.map(d => d.value);
-
-        chart.update();
-
-        updateHistoryTable();
-    }
-    catch(error)
-    {
-        console.error(error);
-    }
+  }
+  catch(err)
+  {
+    console.error(err);
+  }
 }
       totalSamples++;
       document.getElementById('footerSamples').textContent = `${totalSamples} sampel`;
@@ -1343,7 +1306,7 @@
     // ── SCRIPT CORE INTERVALS ──
     function startIntervals() {
       if (tickInterval) return;
-      tickInterval = setInterval(tick, 2000);
+      tickInterval = setInterval(tick, 1000);
       uptimeInterval = setInterval(() => {
         for (let s = 0; s < 2; s++) {
           if (systemStates[s]) {
