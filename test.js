@@ -4,10 +4,10 @@
 const https = require('https');
 
 // The typical database URLs:
-const urls = [
-  'https://smart-power-meter-f72c9-default-rtdb.firebaseio.com/.json',
-  'https://smart-power-meter-f72c9-default-rtdb.asia-southeast1.firebasedatabase.app/.json'
-];
+const char* firebaseDataURL = "https://firebasedatabase.app";
+
+// Folder tempat ESP32 membaca status tombol perintah "ON" / "OFF" dari Web Dashboard
+const char* firebaseControlURL = "https://firebasedatabase.app";
 
 urls.forEach(url => {
   https.get(url, (res) => {
