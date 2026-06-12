@@ -30,9 +30,12 @@
     };
   </script>
   <link
-    href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
     rel="stylesheet">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+  <!-- Firebase SDK (Compat Version) -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
   <style>
     :root {
       --bg: #edf3f8;
@@ -716,6 +719,7 @@
     </div>
   </header>
 
+  <!-- ── SUB-HEADER NAVIGATION BAR ── -->
   <div class="nav-bar">
     <div class="nav-tab active" onclick="switchPage('dashboard')">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
@@ -739,6 +743,7 @@
   </div>
 
   <main>
+    <!-- ── HALAMAN 1: DASHBOARD UTAMA ── -->
     <div id="page-dashboard" class="page-content active">
 
       <div class="section-label">Pilih Sensor</div>
@@ -791,6 +796,7 @@
 
       <div class="bottom-grid">
 
+        <!-- Chart -->
         <div class="panel">
           <div class="panel-title">
             <div class="panel-title-text">
@@ -822,6 +828,7 @@
           </div>
         </div>
 
+        <!-- History Table -->
         <div class="panel">
           <div class="panel-title" style="display:flex; justify-content:space-between; align-items:center;">
             <div class="panel-title-text">
@@ -866,7 +873,11 @@
           </div>
         </div>
 
-      </div> </div> <div id="page-reports" class="page-content">
+      </div> <!-- Selesai bottom-grid -->
+    </div> <!-- Selesai page-dashboard -->
+
+    <!-- ── HALAMAN 2: LAPORAN PERBANDINGAN KEDUA SENSOR ── -->
+    <div id="page-reports" class="page-content">
       <div class="reports-header"
         style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px; flex-wrap:wrap; gap:16px;">
         <div class="section-label" style="margin-bottom:0;">Laporan Perbandingan Kedua Sensor</div>
@@ -893,7 +904,9 @@
         </div>
       </div>
 
+      <!-- Quick Summary Cards for both sensors side by side -->
       <div class="bottom-grid" style="grid-template-columns: 1fr 1fr; margin-bottom:32px;">
+        <!-- Card Sensor 1 -->
         <div class="panel" style="background:#f4f8fb; border-color:#dbe6ee;">
           <div
             style="font-size:16px; font-weight:700; color:var(--accent); margin-bottom:16px; display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #dbe6ee; padding-bottom:8px;">
@@ -901,47 +914,40 @@
             <span class="status-badge" id="reportStatusBadge0"
               style="padding:4px 10px; font-size:10px; pointer-events:none; border-radius:4px;">MEMUAT...</span>
           </div>
-          <div style="display:grid; grid-template-columns:repeat(5, 1fr); gap:8px;">
+          <div style="display:grid; grid-template-columns:repeat(4, 1fr); gap:12px;">
             <div>
               <div
-                style="font-size:9px; color:var(--muted); text-transform:uppercase; font-family:'IBM Plex Mono', monospace; font-weight:600; letter-spacing:0.5px; margin-bottom:4px;">
+                style="font-size:9px; color:var(--muted); text-transform:uppercase; font-family:'IBM Plex Mono', monospace; font-weight:600; letter-spacing:1px; margin-bottom:4px;">
                 Tegangan Rata-Rata</div>
               <div id="reportAvgV0"
-                style="font-size:16px; font-weight:700; color:var(--accent); font-family:'Rajdhani', sans-serif;">—
+                style="font-size:18px; font-weight:700; color:var(--accent); font-family:'Rajdhani', sans-serif;">—
               </div>
             </div>
             <div>
               <div
-                style="font-size:9px; color:var(--muted); text-transform:uppercase; font-family:'IBM Plex Mono', monospace; font-weight:600; letter-spacing:0.5px; margin-bottom:4px;">
-                Arus Rata-Rata</div>
-              <div id="reportAvgA0"
-                style="font-size:16px; font-weight:700; color:#0ea5e9; font-family:'Rajdhani', sans-serif;">—
-              </div>
-            </div>
-            <div>
-              <div
-                style="font-size:9px; color:var(--muted); text-transform:uppercase; font-family:'IBM Plex Mono', monospace; font-weight:600; letter-spacing:0.5px; margin-bottom:4px;">
+                style="font-size:9px; color:var(--muted); text-transform:uppercase; font-family:'IBM Plex Mono', monospace; font-weight:600; letter-spacing:1px; margin-bottom:4px;">
                 Daya Rata-Rata</div>
               <div id="reportAvgW0"
-                style="font-size:16px; font-weight:700; color:#ed6c2f; font-family:'Rajdhani', sans-serif;">—</div>
+                style="font-size:18px; font-weight:700; color:#ed6c2f; font-family:'Rajdhani', sans-serif;">—</div>
             </div>
             <div>
               <div
-                style="font-size:9px; color:var(--muted); text-transform:uppercase; font-family:'IBM Plex Mono', monospace; font-weight:600; letter-spacing:0.5px; margin-bottom:4px;">
+                style="font-size:9px; color:var(--muted); text-transform:uppercase; font-family:'IBM Plex Mono', monospace; font-weight:600; letter-spacing:1px; margin-bottom:4px;">
                 Total Energi</div>
               <div id="reportEnergy0"
-                style="font-size:16px; font-weight:700; color:#eab308; font-family:'Rajdhani', sans-serif;">—</div>
+                style="font-size:18px; font-weight:700; color:#eab308; font-family:'Rajdhani', sans-serif;">—</div>
             </div>
             <div>
               <div
-                style="font-size:9px; color:var(--muted); text-transform:uppercase; font-family:'IBM Plex Mono', monospace; font-weight:600; letter-spacing:0.5px; margin-bottom:4px;">
+                style="font-size:9px; color:var(--muted); text-transform:uppercase; font-family:'IBM Plex Mono', monospace; font-weight:600; letter-spacing:1px; margin-bottom:4px;">
                 Frekuensi Rata-Rata</div>
               <div id="reportAvgHz0"
-                style="font-size:16px; font-weight:700; color:#10b981; font-family:'Rajdhani', sans-serif;">—</div>
+                style="font-size:18px; font-weight:700; color:#10b981; font-family:'Rajdhani', sans-serif;">—</div>
             </div>
           </div>
         </div>
 
+        <!-- Card Sensor 2 -->
         <div class="panel" style="background:#f4f8fb; border-color:#dbe6ee;">
           <div
             style="font-size:16px; font-weight:700; color:var(--accent); margin-bottom:16px; display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #dbe6ee; padding-bottom:8px;">
@@ -949,48 +955,41 @@
             <span class="status-badge" id="reportStatusBadge1"
               style="padding:4px 10px; font-size:10px; pointer-events:none; border-radius:4px;">MEMUAT...</span>
           </div>
-          <div style="display:grid; grid-template-columns:repeat(5, 1fr); gap:8px;">
+          <div style="display:grid; grid-template-columns:repeat(4, 1fr); gap:12px;">
             <div>
               <div
-                style="font-size:9px; color:var(--muted); text-transform:uppercase; font-family:'IBM Plex Mono', monospace; font-weight:600; letter-spacing:0.5px; margin-bottom:4px;">
+                style="font-size:9px; color:var(--muted); text-transform:uppercase; font-family:'IBM Plex Mono', monospace; font-weight:600; letter-spacing:1px; margin-bottom:4px;">
                 Tegangan Rata-Rata</div>
               <div id="reportAvgV1"
-                style="font-size:16px; font-weight:700; color:var(--accent); font-family:'Rajdhani', sans-serif;">—
+                style="font-size:18px; font-weight:700; color:var(--accent); font-family:'Rajdhani', sans-serif;">—
               </div>
             </div>
             <div>
               <div
-                style="font-size:9px; color:var(--muted); text-transform:uppercase; font-family:'IBM Plex Mono', monospace; font-weight:600; letter-spacing:0.5px; margin-bottom:4px;">
-                Arus Rata-Rata</div>
-              <div id="reportAvgA1"
-                style="font-size:16px; font-weight:700; color:#0ea5e9; font-family:'Rajdhani', sans-serif;">—
-              </div>
-            </div>
-            <div>
-              <div
-                style="font-size:9px; color:var(--muted); text-transform:uppercase; font-family:'IBM Plex Mono', monospace; font-weight:600; letter-spacing:0.5px; margin-bottom:4px;">
+                style="font-size:9px; color:var(--muted); text-transform:uppercase; font-family:'IBM Plex Mono', monospace; font-weight:600; letter-spacing:1px; margin-bottom:4px;">
                 Daya Rata-Rata</div>
               <div id="reportAvgW1"
-                style="font-size:16px; font-weight:700; color:#ed6c2f; font-family:'Rajdhani', sans-serif;">—</div>
+                style="font-size:18px; font-weight:700; color:#ed6c2f; font-family:'Rajdhani', sans-serif;">—</div>
             </div>
             <div>
               <div
-                style="font-size:9px; color:var(--muted); text-transform:uppercase; font-family:'IBM Plex Mono', monospace; font-weight:600; letter-spacing:0.5px; margin-bottom:4px;">
+                style="font-size:9px; color:var(--muted); text-transform:uppercase; font-family:'IBM Plex Mono', monospace; font-weight:600; letter-spacing:1px; margin-bottom:4px;">
                 Total Energi</div>
               <div id="reportEnergy1"
-                style="font-size:16px; font-weight:700; color:#eab308; font-family:'Rajdhani', sans-serif;">—</div>
+                style="font-size:18px; font-weight:700; color:#eab308; font-family:'Rajdhani', sans-serif;">—</div>
             </div>
             <div>
               <div
-                style="font-size:9px; color:var(--muted); text-transform:uppercase; font-family:'IBM Plex Mono', monospace; font-weight:600; letter-spacing:0.5px; margin-bottom:4px;">
+                style="font-size:9px; color:var(--muted); text-transform:uppercase; font-family:'IBM Plex Mono', monospace; font-weight:600; letter-spacing:1px; margin-bottom:4px;">
                 Frekuensi Rata-Rata</div>
               <div id="reportAvgHz1"
-                style="font-size:16px; font-weight:700; color:#10b981; font-family:'Rajdhani', sans-serif;">—</div>
+                style="font-size:18px; font-weight:700; color:#10b981; font-family:'Rajdhani', sans-serif;">—</div>
             </div>
           </div>
         </div>
       </div>
 
+      <!-- Integrated side-by-side table -->
       <div class="panel" style="padding:0; overflow:hidden;">
         <div class="panel-title"
           style="padding:20px 24px 12px 24px; margin-bottom:0; border-bottom:1px solid var(--border);">
@@ -1034,7 +1033,9 @@
           </table>
         </div>
       </div>
-    </div> </main>
+    </div> <!-- Selesai page-reports -->
+
+  </main>
 
   <footer>
     <span>© 2026 Power Monitoring System</span>
@@ -1070,10 +1071,8 @@
     let chartLabels = [];
     let uptimeArray = [0, 0];
     let totalSamples = 0;
-    let cumulativeEnergy = [12.2485, 8.4512]; // Real cumulative PLN kWh tracking for both sensors
 
     let systemStates = [true, true];
-    let tickInterval = null;
     let uptimeInterval = null;
 
     // ── DATETIME ──
@@ -1143,61 +1142,94 @@
       }
     });
 
-async function tick()
-{
-  try
-  {
-    const response = await fetch(
-      "https://smart-power-meter-f72c9-default-rtdb.asia-southeast1.firebasedatabase.app/pzem.json"
-    );
+    // ── FIREBASE SETUP ──
+    // GANTI KONFIGURASI DI BAWAH INI DENGAN KONFIGURASI FIREBASE ANDA
+    const firebaseConfig = {
+      apiKey: "API_KEY_ANDA",
+      authDomain: "PROJECT_ID.firebaseapp.com",
+      databaseURL: "https://PROJECT_ID-default-rtdb.firebaseio.com",
+      projectId: "PROJECT_ID",
+      storageBucket: "PROJECT_ID.appspot.com",
+      messagingSenderId: "SENDER_ID",
+      appId: "APP_ID"
+    };
 
-    const data = await response.json();
+    // Initialize Firebase
+    if (!firebase.apps.length) {
+      firebase.initializeApp(firebaseConfig);
+    }
+    const database = firebase.database();
 
-    if(!data) return;
+    // Mapping Path Sensor di Firebase Database
+    // Asumsi: Struktur database Anda adalah /Sensor1 dan /Sensor2
+    // Setiap node berisi JSON: { "Tegangan": 220, "Arus": 1.5, "Daya": 330, "Energi": 12.5, "Frekuensi": 50 }
+    const sensorPaths = ['Sensor1', 'Sensor2'];
 
-    const values = [
-      Number(data.voltage || 0),
-      Number(data.current || 0),
-      Number(data.power || 0),
-      Number(data.energy || 0),
-      Number(data.frequency || 0)
-    ];
-
-    values.forEach((val,i)=>
-    {
-      const el =
-      document.getElementById(`val-${i}`);
-
-      if(el)
-      {
-        el.textContent =
-        val.toFixed(PARAMS[i].decimals);
+    function setupFirebaseListeners() {
+      for (let s = 0; s < 2; s++) {
+        const path = sensorPaths[s];
+        
+        database.ref(path).on('value', (snapshot) => {
+          const data = snapshot.val();
+          if (data) {
+             processSensorData(s, data);
+          }
+        });
       }
-    });
+    }
 
-  }
-  catch(err)
-  {
-    console.error(err);
-  }
-}
-      totalSamples++;
-      document.getElementById('footerSamples').textContent = `${totalSamples} sampel`;
+    function processSensorData(s, data) {
+        if (!systemStates[s]) return; // Skip if sensor is OFF
+        
+        const now = new Date();
+        const timeStr = `${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
 
-      // Update chart for current active sensor and param
-      const data = history[activeSensor][activeParam];
-      const points = data.slice(0, MAX_POINTS).reverse();
-      chart.data.labels = points.map(d => d.time);
-      chart.data.datasets[0].data = points.map(d => d.value);
-      chart.update('none');
+        // Mengambil data dari JSON Firebase
+        const tegangan = parseFloat(data.Tegangan) || 0;
+        const arus = parseFloat(data.Arus) || 0;
+        const daya = parseFloat(data.Daya) || 0;
+        const energi = parseFloat(data.Energi) || 0;
+        const frekuensi = parseFloat(data.Frekuensi) || 0;
 
-      // Stats
-      const vals = points.map(d => d.value);
-      if (vals.length) {
-        document.getElementById('statMin').textContent = Math.min(...vals).toFixed(PARAMS[activeParam].decimals) + ' ' + PARAMS[activeParam].unit;
-        document.getElementById('statMax').textContent = Math.max(...vals).toFixed(PARAMS[activeParam].decimals) + ' ' + PARAMS[activeParam].unit;
-        document.getElementById('statAvg').textContent = (vals.reduce((a, b) => a + b, 0) / vals.length).toFixed(PARAMS[activeParam].decimals) + ' ' + PARAMS[activeParam].unit;
-        document.getElementById('statLast').textContent = vals[vals.length - 1].toFixed(PARAMS[activeParam].decimals) + ' ' + PARAMS[activeParam].unit;
+        const currentVals = [tegangan, arus, daya, energi, frekuensi];
+
+        currentVals.forEach((val, i) => {
+          history[s][i].unshift({ time: timeStr, value: val });
+          if (history[s][i].length > MAX_HISTORY) history[s][i].pop();
+
+          // Update card UI only if this is the active sensor
+          if (s === activeSensor) {
+            const el = document.getElementById(`val-${i}`);
+            el.textContent = val.toFixed(PARAMS[i].decimals);
+            el.classList.remove('flash');
+            void el.offsetWidth;
+            el.classList.add('flash');
+          }
+        });
+
+        totalSamples++;
+        document.getElementById('footerSamples').textContent = `${totalSamples} sampel`;
+
+        updateChartAndTables();
+    }
+
+    function updateChartAndTables() {
+      // Update chart
+      if (history[activeSensor][activeParam].length > 0) {
+        const data = history[activeSensor][activeParam];
+        const points = data.slice(0, MAX_POINTS).reverse();
+        chart.data.labels = points.map(d => d.time);
+        chart.data.datasets[0].data = points.map(d => d.value);
+        chart.update('none');
+
+        // Stats
+        const vals = points.map(d => d.value);
+        if (vals.length) {
+          document.getElementById('statMin').textContent = Math.min(...vals).toFixed(PARAMS[activeParam].decimals) + ' ' + PARAMS[activeParam].unit;
+          document.getElementById('statMax').textContent = Math.max(...vals).toFixed(PARAMS[activeParam].decimals) + ' ' + PARAMS[activeParam].unit;
+          document.getElementById('statAvg').textContent = (vals.reduce((a, b) => a + b, 0) / vals.length).toFixed(PARAMS[activeParam].decimals) + ' ' + PARAMS[activeParam].unit;
+          document.getElementById('statLast').textContent = vals[vals.length - 1].toFixed(PARAMS[activeParam].decimals) + ' ' + PARAMS[activeParam].unit;
+        }
       }
 
       updateHistoryTable();
@@ -1303,10 +1335,8 @@ async function tick()
       updateUptimeDisplay();
     }
 
-    // ── SCRIPT CORE INTERVALS ──
     function startIntervals() {
-      if (tickInterval) return;
-      tickInterval = setInterval(tick, 1000);
+      if (uptimeInterval) return;
       uptimeInterval = setInterval(() => {
         for (let s = 0; s < 2; s++) {
           if (systemStates[s]) {
@@ -1318,9 +1348,7 @@ async function tick()
     }
 
     function stopIntervals() {
-      clearInterval(tickInterval);
       clearInterval(uptimeInterval);
-      tickInterval = null;
       uptimeInterval = null;
     }
 
@@ -1493,19 +1521,17 @@ async function tick()
         const len = history[s][0].length;
         if (len > 0) {
           const avgV = history[s][0].reduce((sum, d) => sum + d.value, 0) / len;
-          const avgA = history[s][1].reduce((sum, d) => sum + d.value, 0) / len;
           const avgW = history[s][2].reduce((sum, d) => sum + d.value, 0) / len;
           const lastKwh = history[s][3][0]?.value || 0;
+
           const avgHz = history[s][4].reduce((sum, d) => sum + d.value, 0) / len;
 
           document.getElementById(`reportAvgV${s}`).textContent = avgV.toFixed(2) + ' V';
-          document.getElementById(`reportAvgA${s}`).textContent = avgA.toFixed(2) + ' A';
           document.getElementById(`reportAvgW${s}`).textContent = avgW.toFixed(2) + ' W';
           document.getElementById(`reportEnergy${s}`).textContent = lastKwh.toFixed(4) + ' kWh';
           document.getElementById(`reportAvgHz${s}`).textContent = avgHz.toFixed(2) + ' Hz';
         } else {
           document.getElementById(`reportAvgV${s}`).textContent = '—';
-          document.getElementById(`reportAvgA${s}`).textContent = '—';
           document.getElementById(`reportAvgW${s}`).textContent = '—';
           document.getElementById(`reportEnergy${s}`).textContent = '—';
           document.getElementById(`reportAvgHz${s}`).textContent = '—';
@@ -1517,7 +1543,7 @@ async function tick()
       const maxRows = Math.max(history[0][0].length, history[1][0].length);
 
       if (maxRows === 0) {
-        tbody.innerHTML = '<tr><td colspan="12" style="padding:24px; text-align:center; color:var(--muted); font-weight:500;">Belum ada data untuk ditampilkan. Silakan nyalakan sensor di halaman Dashboard.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="10" style="padding:24px; text-align:center; color:var(--muted); font-weight:500;">Belum ada data untuk ditampilkan. Silakan nyalakan sensor di halaman Dashboard.</td></tr>';
         return;
       }
 
@@ -1579,7 +1605,7 @@ async function tick()
         const kwh0 = history[0][3][i]?.value !== undefined ? history[0][3][i].value.toFixed(4) : '';
         const hz0 = history[0][4][i]?.value !== undefined ? history[0][4][i].value.toFixed(2) : '';
 
-        const v1 = history[1][0][i]?.value !== undefined ? history[1][1][i].value.toFixed(2) : '';
+        const v1 = history[1][0][i]?.value !== undefined ? history[1][0][i].value.toFixed(2) : '';
         const a1 = history[1][1][i]?.value !== undefined ? history[1][1][i].value.toFixed(2) : '';
         const w1 = history[1][2][i]?.value !== undefined ? history[1][2][i].value.toFixed(2) : '';
         const kwh1 = history[1][3][i]?.value !== undefined ? history[1][3][i].value.toFixed(4) : '';
@@ -1720,7 +1746,7 @@ async function tick()
     document.getElementById('statusBadge').addEventListener('click', toggleSystem);
 
     // ── START ──
-    tick();
+    setupFirebaseListeners();
     startIntervals();
   </script>
 </body>
