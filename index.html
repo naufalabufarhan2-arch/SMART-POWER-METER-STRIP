@@ -1170,9 +1170,11 @@
         database.ref(path).on('value', (snapshot) => {
           const data = snapshot.val();
           if (data) {
-            // Sync relay status dari Firebase ke state lokal
-            if (data.relay !== undefined) {
-              const relayOn = (String(data.relay).toUpperCase() === 'ON');
+            // Sync status tombol dari field "control" (perintah dashboard)
+            // Status relay ASLI hardware ada di field "relay" (ditulis ESP32)
+            const controlField = data.control !== undefined ? data.control : data.relay;
+            if (controlField !== undefined) {
+              const relayOn = (String(controlField).toUpperCase() === 'ON');
               if (systemStates[s] !== relayOn) {
                 systemStates[s] = relayOn;
                 if (s === activeSensor) updateSystemUI();
@@ -1324,8 +1326,8 @@
       const relayVal = newState ? "ON" : "OFF";
       const path = sensorPaths[activeSensor];
 
-      // Kirim perintah ke Firebase dulu, update UI setelah Firebase konfirmasi
-      database.ref(path).update({ relay: relayVal })
+      // Kirim perintah ke Firebase ke field "control" — dibaca oleh ESP32
+      database.ref(path).update({ control: relayVal })
         .then(() => {
           console.log(`Relay ${path} set to ${relayVal}`);
           systemStates[activeSensor] = newState;
