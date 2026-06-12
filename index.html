@@ -1144,28 +1144,24 @@
 
     // ── FIREBASE SETUP ──
     // GANTI KONFIGURASI DI BAWAH INI DENGAN KONFIGURASI FIREBASE ANDA
-  const firebaseConfig = {
-  apiKey: "AIzaSyAP06GuqBy4RIfDa3ngshksvnrfWcn09l8",
-  authDomain: "smart-power-meter-f72c9.firebaseapp.com",
-  databaseURL: "https://smart-power-meter-f72c9-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId: "smart-power-meter-f72c9",
-  storageBucket: "smart-power-meter-f72c9.firebasestorage.app",
-  messagingSenderId: "331580059264",
-  appId: "1:331580059264:web:07dcc54bbcbabb22afc065",
-  measurementId: "G-VVETL2YN4Q"
-};
-
-
-    // Initialize Firebase
+    const firebaseConfig = {
+      apiKey: "AIzaSyAP06GuqBy4RIfDa3ngshksvnrfWcn09l8",
+      authDomain: "smart-power-meter-f72c9.firebaseapp.com",
+      databaseURL: "https://smart-power-meter-f72c9-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "smart-power-meter-f72c9",
+      storageBucket: "smart-power-meter-f72c9.appspot.com",
+      messagingSenderId: "331580059264",
+      appId: "1:331580059264:web:07dcc54bbcbabb22afc065",
+      measurementId: "G-VVETL2YN4Q"
+    };// Initialize Firebase
     if (!firebase.apps.length) {
       firebase.initializeApp(firebaseConfig);
     }
     const database = firebase.database();
 
     // Mapping Path Sensor di Firebase Database
-    // Asumsi: Struktur database Anda adalah /Sensor1 dan /Sensor2
-    // Setiap node berisi JSON: { "Tegangan": 220, "Arus": 1.5, "Daya": 330, "Energi": 12.5, "Frekuensi": 50 }
-    const sensorPaths = ['Sensor1', 'Sensor2'];
+    // Berdasarkan database Anda, data dikirim ke node: "pzem"
+    const sensorPaths = ['pzem', 'pzem2'];
 
     function setupFirebaseListeners() {
       for (let s = 0; s < 2; s++) {
@@ -1186,12 +1182,12 @@
         const now = new Date();
         const timeStr = `${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
 
-        // Mengambil data dari JSON Firebase berdasarkan format ESP32 Anda
-        const tegangan = parseFloat(data.Voltage) || 0;
-        const arus = parseFloat(data.Current) || 0;
-        const daya = parseFloat(data.Power) || 0;
-        const energi = parseFloat(data.Energy) || parseFloat(data['Energy/s']) || 0;
-        const frekuensi = parseFloat(data.Frequency) || 0;
+        // Mengambil data dari JSON Firebase berdasarkan format asli di database Anda
+        const tegangan = parseFloat(data.voltage) || 0;
+        const arus = parseFloat(data.current) || 0;
+        const daya = parseFloat(data.power) || 0;
+        const energi = parseFloat(data.energy) || 0;
+        const frekuensi = parseFloat(data.frequency) || 0;
 
         const currentVals = [tegangan, arus, daya, energi, frekuensi];
 
