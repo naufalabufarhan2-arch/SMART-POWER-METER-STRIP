@@ -1,0 +1,8 @@
+{
+  "voltage": 0,
+  "current": 0,
+  "power": 0,
+  "frequency": 0,
+  "energy": 0,
+  "relay": "OFF"
+}
