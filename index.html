@@ -21,13 +21,7 @@
     .status-indicator.off { background: #ef4444; box-shadow: 0 0 8px #ef4444; animation: none; }
     @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.5; transform: scale(1.2); } }
     .status-text { font-weight: 600; font-size: 0.85rem; }
-    .nav-bar { background: white; padding: 0 32px; display: flex; gap: 24px; border-bottom: 1px solid #e2e8f0; }
-    .nav-item { padding: 16px 4px; font-weight: 600; color: #64748b; cursor: pointer; border-bottom: 2px solid transparent; }
-    .nav-item.active { color: #1e3a5f; border-bottom-color: #f97316; }
     .main { padding: 32px; max-width: 1400px; margin: 0 auto; }
-    .page { display: none; animation: fadeIn 0.3s; }
-    .page.active { display: block; }
-    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     .param-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; margin-bottom: 32px; }
     .param-card { background: white; border: 1px solid #e2e8f0; border-radius: 16px; padding: 20px; transition: all 0.3s; }
     .param-card:hover { transform: translateY(-4px); box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1); }
@@ -38,13 +32,18 @@
     .panel-title { font-weight: 600; font-size: 0.85rem; text-transform: uppercase; color: #64748b; margin-bottom: 16px; display: flex; justify-content: space-between; }
     .chart-container { height: 250px; position: relative; }
     .footer { background: white; padding: 16px 32px; border-top: 1px solid #e2e8f0; display: flex; justify-content: space-between; font-size: 0.7rem; color: #64748b; }
-    .btn { background: #f0f4f8; border: 1px solid #e2e8f0; border-radius: 8px; padding: 6px 12px; font-size: 0.7rem; font-weight: 600; cursor: pointer; }
     .cable-status { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; font-weight: 600; }
     .cable-plugged { background: rgba(16,185,129,0.15); color: #10b981; }
     .cable-unplugged { background: rgba(239,68,68,0.15); color: #ef4444; }
-    .history-table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
-    .history-table th, .history-table td { padding: 10px 8px; border-bottom: 1px solid #e2e8f0; text-align: left; }
-    .table-scroll { max-height: 300px; overflow-y: auto; }
+    .status-row { display: flex; gap: 24px; flex-wrap: wrap; margin-top: 16px; }
+    .status-item { background: #f8fafc; padding: 12px 20px; border-radius: 12px; flex: 1; min-width: 150px; }
+    .status-label { font-size: 0.7rem; color: #64748b; text-transform: uppercase; }
+    .status-value { font-size: 1.1rem; font-weight: 700; margin-top: 4px; }
+    .btn { background: #f0f4f8; border: 1px solid #e2e8f0; border-radius: 8px; padding: 6px 12px; font-size: 0.7rem; font-weight: 600; cursor: pointer; }
+    .btn:hover { background: #e2e8f0; }
+    .warning { color: #f97316; }
+    .danger { color: #ef4444; }
+    .success { color: #10b981; }
   </style>
 </head>
 <body>
@@ -57,48 +56,40 @@
   <div class="datetime" id="datetime">—</div>
 </header>
 
-<div class="nav-bar">
-  <div class="nav-item active" onclick="switchPage('dashboard')">📊 DASHBOARD</div>
-  <div class="nav-item" onclick="switchPage('history')">📋 RIWAYAT</div>
-</div>
-
 <main class="main">
-  <!-- HALAMAN DASHBOARD -->
-  <div id="page-dashboard" class="page active">
-    <div class="param-grid">
-      <div class="param-card"><div class="param-label">⚡ Tegangan</div><div class="param-value" id="voltage">0.00<span class="param-unit">V</span></div></div>
-      <div class="param-card"><div class="param-label">🔁 Arus</div><div class="param-value" id="current">0.00<span class="param-unit">A</span></div></div>
-      <div class="param-card"><div class="param-label">💡 Daya</div><div class="param-value" id="power">0.00<span class="param-unit">W</span></div></div>
-      <div class="param-card"><div class="param-label">🔋 Energi</div><div class="param-value" id="energy">0.0000<span class="param-unit">kWh</span></div></div>
-      <div class="param-card"><div class="param-label">📡 Frekuensi</div><div class="param-value" id="frequency">0.00<span class="param-unit">Hz</span></div></div>
-    </div>
+  <div class="param-grid">
+    <div class="param-card"><div class="param-label">⚡ Tegangan</div><div class="param-value" id="voltage">0.00<span class="param-unit">V</span></div></div>
+    <div class="param-card"><div class="param-label">🔁 Arus</div><div class="param-value" id="current">0.00<span class="param-unit">A</span></div></div>
+    <div class="param-card"><div class="param-label">💡 Daya</div><div class="param-value" id="power">0.00<span class="param-unit">W</span></div></div>
+    <div class="param-card"><div class="param-label">🔋 Energi</div><div class="param-value" id="energy">0.0000<span class="param-unit">kWh</span></div></div>
+    <div class="param-card"><div class="param-label">📡 Frekuensi</div><div class="param-value" id="frequency">0.00<span class="param-unit">Hz</span></div></div>
+  </div>
 
-    <div class="panel">
-      <div class="panel-title"><span>📊 STATUS SISTEM</span></div>
-      <div style="display: flex; gap: 20px; flex-wrap: wrap;">
-        <div><strong>🔌 Status Kabel CAS:</strong> <span id="cableStatusText" class="cable-status cable-plugged">TERPASANG</span></div>
-        <div><strong>🔌 Status Relay:</strong> <span id="relayStatusText">ON</span></div>
-        <div><strong>⚠️ Mode Overload:</strong> <span id="overloadStatusText">TIDAK AKTIF</span></div>
+  <div class="panel">
+    <div class="panel-title">📊 STATUS SISTEM</div>
+    <div class="status-row">
+      <div class="status-item">
+        <div class="status-label">🔌 Status Kabel CAS</div>
+        <div class="status-value" id="cableStatus">—</div>
       </div>
-    </div>
-
-    <div class="panel">
-      <div class="panel-title"><span>📈 GRAFIK DAYA (Watt)</span></div>
-      <div class="chart-container"><canvas id="powerChart"></canvas></div>
+      <div class="status-item">
+        <div class="status-label">🔌 Status Relay</div>
+        <div class="status-value" id="relayStatus">—</div>
+      </div>
+      <div class="status-item">
+        <div class="status-label">⚠️ Mode Overload</div>
+        <div class="status-value" id="overloadStatus">—</div>
+      </div>
+      <div class="status-item">
+        <div class="status-label">🎮 Kontrol Web</div>
+        <div class="status-value" id="webControl">—</div>
+      </div>
     </div>
   </div>
 
-  <!-- HALAMAN RIWAYAT -->
-  <div id="page-history" class="page">
-    <div class="panel">
-      <div class="panel-title"><span>📋 RIWAYAT DATA SENSOR</span><button class="btn" onclick="exportToCSV()">📎 EXPORT CSV</button></div>
-      <div class="table-scroll">
-        <table class="history-table">
-          <thead><tr><th>Waktu</th><th>Tegangan (V)</th><th>Arus (A)</th><th>Daya (W)</th><th>Energi (kWh)</th><th>Frekuensi (Hz)</th><th>Status Kabel</th><th>Status Relay</th></tr></thead>
-          <tbody id="historyTableBody"></tbody>
-        </table>
-      </div>
-    </div>
+  <div class="panel">
+    <div class="panel-title"><span>📈 GRAFIK DAYA (Watt)</span><span id="chartUpdateTime" style="font-size:0.7rem; font-weight:normal;">—</span></div>
+    <div class="chart-container"><canvas id="powerChart"></canvas></div>
   </div>
 </main>
 
@@ -108,7 +99,9 @@
 </footer>
 
 <script>
-  // FIREBASE CONFIG
+  // ============================================================
+  // FIREBASE CONFIGURATION
+  // ============================================================
   const firebaseConfig = {
     apiKey: "AIzaSyAP06GuqBy4RIfDa3ngshksvnrfWcn09l8",
     authDomain: "smart-power-meter-f72c9.firebaseapp.com",
@@ -119,157 +112,237 @@
     appId: "1:331580059264:web:07dcc54bbcbabb22afc065"
   };
 
-  if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+  // Initialize Firebase
+  if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+  }
   const database = firebase.database();
 
+  // ============================================================
+  // GLOBAL VARIABLES
+  // ============================================================
   let powerChart = null;
   let chartData = [];
-  let historyData = [];
+  let isFirstLoad = true;
 
-  // Update datetime
+  // ============================================================
+  // UPDATE DATETIME
+  // ============================================================
   function updateDateTime() {
     const now = new Date();
-    document.getElementById('datetime').textContent = now.toLocaleString('id-ID');
+    const days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
+    document.getElementById('datetime').textContent = `${days[now.getDay()]}, ${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()} ${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}:${now.getSeconds().toString().padStart(2,'0')}`;
   }
   setInterval(updateDateTime, 1000);
   updateDateTime();
 
-  // Kirim perintah ON/OFF ke ESP32
+  // ============================================================
+  // KIRIM PERINTAH KE ESP32
+  // ============================================================
   function sendRelayCommand(turnOn) {
     const controlValue = turnOn ? "ON" : "OFF";
     database.ref('pzem').update({ control: controlValue })
-      .then(() => console.log(`Perintah ${controlValue} dikirim`))
-      .catch(err => console.error('Gagal kirim:', err));
+      .then(() => {
+        console.log(`✅ Perintah ${controlValue} terkirim ke ESP32`);
+        document.getElementById('webControl').innerHTML = turnOn ? '<span class="success">ON (dikirim)</span>' : '<span class="danger">OFF (dikirim)</span>';
+        setTimeout(() => {
+          document.getElementById('webControl').innerHTML = turnOn ? '<span class="success">ON</span>' : '<span class="danger">OFF</span>';
+        }, 2000);
+      })
+      .catch(err => {
+        console.error('❌ Gagal kirim perintah:', err);
+        document.getElementById('webControl').innerHTML = '<span class="danger">Gagal kirim!</span>';
+      });
   }
 
-  // Buat tombol kontrol di header
-  const controlCard = document.createElement('div');
-  controlCard.className = 'control-card';
-  controlCard.innerHTML = '<div class="status-indicator"></div><div class="status-text">SISTEM: ON</div>';
-  controlCard.onclick = () => {
-    const isOn = controlCard.querySelector('.status-text').textContent === 'SISTEM: ON';
-    sendRelayCommand(!isOn);
-  };
-  document.querySelector('.header').appendChild(controlCard);
+  // ============================================================
+  // BUAT TOMBOL KONTROL DI HEADER
+  // ============================================================
+  function createControlButton() {
+    const header = document.querySelector('.header');
+    const controlCard = document.createElement('div');
+    controlCard.className = 'control-card';
+    controlCard.innerHTML = '<div class="status-indicator"></div><div class="status-text">SISTEM: ON</div>';
+    controlCard.onclick = () => {
+      const isCurrentlyOn = controlCard.querySelector('.status-text').textContent === 'SISTEM: ON';
+      const newState = !isCurrentlyOn;
+      sendRelayCommand(newState);
+      
+      // Update tampilan tombol sementara
+      const indicator = controlCard.querySelector('.status-indicator');
+      const text = controlCard.querySelector('.status-text');
+      if (newState) {
+        indicator.classList.remove('off');
+        text.textContent = 'SISTEM: ON';
+      } else {
+        indicator.classList.add('off');
+        text.textContent = 'SISTEM: OFF';
+      }
+    };
+    header.appendChild(controlCard);
+    return controlCard;
+  }
 
-  // Update UI berdasarkan data dari Firebase
-  function updateUI(data) {
-    if (!data) return;
-
-    // Update nilai parameter
-    document.getElementById('voltage').innerHTML = (data.voltage || 0).toFixed(2) + '<span class="param-unit">V</span>';
-    document.getElementById('current').innerHTML = (data.current || 0).toFixed(2) + '<span class="param-unit">A</span>';
-    document.getElementById('power').innerHTML = (data.power || 0).toFixed(2) + '<span class="param-unit">W</span>';
-    document.getElementById('energy').innerHTML = (data.energy || 0).toFixed(4) + '<span class="param-unit">kWh</span>';
-    document.getElementById('frequency').innerHTML = (data.frequency || 0).toFixed(2) + '<span class="param-unit">Hz</span>';
-
-    // Update status kabel
-    const cableStatus = document.getElementById('cableStatusText');
-    if (data.cableStatus === true) {
-      cableStatus.textContent = 'TERPASANG';
-      cableStatus.className = 'cable-status cable-plugged';
-    } else {
-      cableStatus.textContent = 'DICABUT';
-      cableStatus.className = 'cable-status cable-unplugged';
+  // ============================================================
+  // UPDATE CHART
+  // ============================================================
+  function updateChart(power, time) {
+    if (!powerChart) {
+      const ctx = document.getElementById('powerChart').getContext('2d');
+      powerChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: [],
+          datasets: [{
+            label: 'Daya (Watt)',
+            data: [],
+            borderColor: '#f97316',
+            backgroundColor: 'rgba(249,115,22,0.1)',
+            borderWidth: 2,
+            fill: true,
+            tension: 0.3,
+            pointRadius: 3,
+            pointHoverRadius: 6
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { position: 'top' },
+            tooltip: { callbacks: { label: (ctx) => `${ctx.parsed.y.toFixed(2)} Watt` } }
+          },
+          scales: {
+            y: { title: { display: true, text: 'Daya (Watt)' } },
+            x: { title: { display: true, text: 'Waktu' } }
+          }
+        }
+      });
     }
-
-    // Update status relay
-    const relayText = document.getElementById('relayStatusText');
-    const controlIndicator = controlCard.querySelector('.status-indicator');
-    const controlText = controlCard.querySelector('.status-text');
     
-    if (data.relay === 'ON' || data.relay === 'ON') {
-      relayText.textContent = 'ON 🟢';
-      controlIndicator.classList.remove('off');
-      controlText.textContent = 'SISTEM: ON';
-    } else {
-      relayText.textContent = 'OFF 🔴';
-      controlIndicator.classList.add('off');
-      controlText.textContent = 'SISTEM: OFF';
-    }
-
-    // Update status overload
-    const overloadText = document.getElementById('overloadStatusText');
-    if (data.relay === 'OFF_OVERLOAD') {
-      overloadText.textContent = 'AKTIF (Relay MATI)';
-      overloadText.style.color = '#ef4444';
-    } else {
-      overloadText.textContent = 'TIDAK AKTIF';
-      overloadText.style.color = '#10b981';
-    }
-
-    // Update chart
-    const power = data.power || 0;
-    const time = new Date().toLocaleTimeString();
     chartData.push({ time, power });
     if (chartData.length > 20) chartData.shift();
+    
+    powerChart.data.labels = chartData.map(d => d.time);
+    powerChart.data.datasets[0].data = chartData.map(d => d.power);
+    powerChart.update();
+    
+    document.getElementById('chartUpdateTime').textContent = `Update: ${time}`;
+  }
 
-    if (powerChart) {
-      powerChart.data.labels = chartData.map(d => d.time);
-      powerChart.data.datasets[0].data = chartData.map(d => d.power);
-      powerChart.update();
+  // ============================================================
+  // UPDATE UI DARI DATA FIREBASE
+  // ============================================================
+  function updateUI(data) {
+    if (!data) {
+      console.log("Menunggu data dari Firebase...");
+      return;
     }
-
-    // Update history table
-    const timeStr = new Date().toLocaleString('id-ID');
-    historyData.unshift({
-      time: timeStr,
-      voltage: data.voltage || 0,
-      current: data.current || 0,
-      power: data.power || 0,
-      energy: data.energy || 0,
-      frequency: data.frequency || 0,
-      cableStatus: data.cableStatus === true ? 'TERPASANG' : 'DICABUT',
-      relayStatus: data.relay || 'ON'
-    });
-    if (historyData.length > 30) historyData.pop();
-
-    const tbody = document.getElementById('historyTableBody');
-    tbody.innerHTML = historyData.map(h => `
-      <tr>
-        <td>${h.time}</td>
-        <td>${h.voltage.toFixed(2)}</td>
-        <td>${h.current.toFixed(2)}</td>
-        <td>${h.power.toFixed(2)}</td>
-        <td>${h.energy.toFixed(4)}</td>
-        <td>${h.frequency.toFixed(2)}</td>
-        <td><span class="cable-status ${h.cableStatus === 'TERPASANG' ? 'cable-plugged' : 'cable-unplugged'}">${h.cableStatus}</span></td>
-        <td>${h.relayStatus}</td>
-      </tr>
-    `).join('');
-
-    document.getElementById('lastUpdate').textContent = `Last update: ${timeStr}`;
-  }
-
-  // Setup chart
-  function setupChart() {
-    const ctx = document.getElementById('powerChart').getContext('2d');
-    powerChart = new Chart(ctx, {
-      type: 'line',
-      data: {
-        labels: [],
-        datasets: [{
-          label: 'Daya (Watt)',
-          data: [],
-          borderColor: '#f97316',
-          backgroundColor: 'rgba(249,115,22,0.1)',
-          borderWidth: 2,
-          fill: true,
-          tension: 0.3
-        }]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: { legend: { position: 'top' } }
+    
+    console.log("Data diterima:", data);
+    
+    // Update parameter listrik
+    const voltage = data.voltage || 0;
+    const current = data.current || 0;
+    const power = data.power || 0;
+    const energy = data.energy || 0;
+    const frequency = data.frequency || 0;
+    
+    document.getElementById('voltage').innerHTML = voltage.toFixed(2) + '<span class="param-unit">V</span>';
+    document.getElementById('current').innerHTML = current.toFixed(2) + '<span class="param-unit">A</span>';
+    document.getElementById('power').innerHTML = power.toFixed(2) + '<span class="param-unit">W</span>';
+    document.getElementById('energy').innerHTML = energy.toFixed(4) + '<span class="param-unit">kWh</span>';
+    document.getElementById('frequency').innerHTML = frequency.toFixed(2) + '<span class="param-unit">Hz</span>';
+    
+    // Update status kabel
+    const cableStatus = document.getElementById('cableStatus');
+    if (data.cableStatus === true) {
+      cableStatus.innerHTML = '<span class="cable-status cable-plugged">🔌 TERPASANG</span>';
+    } else {
+      cableStatus.innerHTML = '<span class="cable-status cable-unplugged">❌ DICABUT</span>';
+    }
+    
+    // Update status relay
+    const relayStatusEl = document.getElementById('relayStatus');
+    const relay = data.relay || 'ON';
+    if (relay === 'ON') {
+      relayStatusEl.innerHTML = '<span class="success">🟢 ON (Normal)</span>';
+    } else if (relay === 'OFF_MANUAL') {
+      relayStatusEl.innerHTML = '<span class="danger">🔴 OFF (Perintah Web)</span>';
+    } else if (relay === 'OFF_OVERLOAD') {
+      relayStatusEl.innerHTML = '<span class="danger">🔴 OFF (Overload)</span>';
+    } else {
+      relayStatusEl.innerHTML = '<span class="danger">🔴 OFF</span>';
+    }
+    
+    // Update status overload
+    const overloadStatus = document.getElementById('overloadStatus');
+    if (relay === 'OFF_OVERLOAD') {
+      overloadStatus.innerHTML = '<span class="danger">⚠️ AKTIF (Relay MATI)</span>';
+    } else {
+      overloadStatus.innerHTML = '<span class="success">✅ TIDAK AKTIF</span>';
+    }
+    
+    // Update kontrol web
+    const controlVal = data.control || 'ON';
+    document.getElementById('webControl').innerHTML = controlVal === 'ON' ? '<span class="success">ON</span>' : '<span class="danger">OFF</span>';
+    
+    // Update tombol kontrol di header
+    const controlCard = document.querySelector('.control-card');
+    if (controlCard) {
+      const indicator = controlCard.querySelector('.status-indicator');
+      const text = controlCard.querySelector('.status-text');
+      const isRelayOn = (relay === 'ON');
+      if (isRelayOn) {
+        indicator.classList.remove('off');
+        text.textContent = 'SISTEM: ON';
+      } else {
+        indicator.classList.add('off');
+        text.textContent = 'SISTEM: OFF';
       }
-    });
+    }
+    
+    // Update chart
+    const now = new Date();
+    const timeStr = `${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}:${now.getSeconds().toString().padStart(2,'0')}`;
+    updateChart(power, timeStr);
+    
+    // Update last update time
+    document.getElementById('lastUpdate').textContent = `Last update: ${now.toLocaleString('id-ID')}`;
+    
+    // Tampilkan warning jika data 0
+    if (power === 0 && voltage === 0 && !isFirstLoad) {
+      console.warn("⚠️ Data PZEM = 0! Periksa koneksi PZEM dan pastikan terhubung ke listrik 220V AC");
+    }
+    isFirstLoad = false;
   }
 
-  // Export to CSV
-  function exportToCSV() {
-    let csv = 'Waktu,Tegangan(V),Arus(A),Daya(W),Energi(kWh),Frekuensi(Hz),Status Kabel,Status Relay\n';
-    historyData.forEach(h => {
-      csv += `${h.time},${h.voltage},${h.current},${h.power},${h.energy},${h.frequency},${h.cableStatus},${h.relayStatus}\n`;
+  // ============================================================
+  // SETUP FIREBASE LISTENER
+  // ============================================================
+  function setupFirebaseListener() {
+    const pzemRef = database.ref('pzem');
+    
+    pzemRef.on('value', (snapshot) => {
+      const data = snapshot.val();
+      updateUI(data);
+    }, (error) => {
+      console.error('Firebase error:', error);
+      document.getElementById('voltage').innerHTML = 'Error<span class="param-unit">V</span>';
     });
-    const blob = new Blob([csv], { type: 'text/csv'
+    
+    console.log("✅ Firebase listener aktif, menunggu data dari ESP32...");
+  }
+
+  // ============================================================
+  // START
+  // ============================================================
+  createControlButton();
+  setupFirebaseListener();
+  
+  console.log("🌐 Web Dashboard siap!");
+  console.log("📡 Menghubungkan ke Firebase: " + firebaseConfig.databaseURL);
+</script>
+</body>
+</html>
